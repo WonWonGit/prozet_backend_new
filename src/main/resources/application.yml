@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    include:
+      - dev
+      - jwt
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+server:
+  port: 8081

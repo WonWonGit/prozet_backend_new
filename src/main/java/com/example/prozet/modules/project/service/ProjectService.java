@@ -1,0 +1,98 @@
+package com.example.prozet.modules.project.service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.prozet.common.CustomException;
+import com.example.prozet.common.ErrorCode;
+import com.example.prozet.enum_pakage.FileType;
+import com.example.prozet.modules.file.domain.dto.response.FileMasterDTO;
+import com.example.prozet.modules.file.service.FileService;
+import com.example.prozet.modules.member.domain.entity.MemberEntity;
+import com.example.prozet.modules.project.domain.dto.response.ProjectListDTO;
+import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
+import com.example.prozet.modules.project.domain.entity.ProjectEntity;
+import com.example.prozet.modules.project.repository.ProjectRepository;
+import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectInfoReqDTO;
+import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
+import com.example.prozet.modules.projectInformation.repository.ProjectInfoRepository;
+import com.example.prozet.utils.UtilsClass;
+
+@Service
+@Transactional(readOnly = true)
+public class ProjectService {
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private ProjectInfoRepository projectInfoRepository;
+
+    @Autowired
+    private FileService fileService;
+
+    @Transactional
+    public ProjectResDTO createProject(MemberEntity memberEntity, ProjectInfoReqDTO projectInfoReqDTO,
+            MultipartFile projectImg) {
+
+        ProjectInfoEntity projectInfoEntity = projectInfoReqDTO.toEntity();
+
+        if (projectImg != null) {
+            FileMasterDTO fileMasterDTO = fileService.fileSave(FileType.PROJECT_MAIN, projectImg);
+            projectInfoEntity.saveFileMasterEntity(fileMasterDTO.toEntity());
+        }
+
+        ProjectInfoEntity projectInfoEntityPS = projectInfoRepository.save(projectInfoEntity);
+
+        ProjectEntity projectEntity = ProjectEntity.builder()
+                .owner(memberEntity)
+                .projectKey(createProjectKey())
+                .deleteYn("N")
+                .build();
+
+        projectEntity.saveProjectInfoEntity(projectInfoEntityPS);
+
+        ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
+
+        if (projectInfoEntityPS == null) {
+            return null;
+        }
+
+        return projectEntityPS.toProjectResDTO(projectInfoEntityPS.toProjectInfoResDTO());
+
+    }
+
+    @Transactional
+    public void deleteProject(String projectKey, String username) {
+        ProjectEntity projectEntity = projectRepository.findByProjectKey(projectKey)
+                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_EXIST));
+
+        if (!projectEntity.getOwner().getUsername().equals(username)) {
+            throw new CustomException(ErrorCode.PROJECT_OWNER_ONLY);
+        }
+
+        projectEntity.setDeleteYn("Y");
+        projectEntity.setDeleteDate(LocalDateTime.now());
+
+    }
+
+    public List<ProjectListDTO> getProjectList(String username) {
+
+        List<ProjectListDTO> projectList = projectRepository.getProjectList(username);
+
+        return projectList;
+
+    }
+
+    public String createProjectKey() {
+        String date = UtilsClass.getCurrentDate();
+
+        return UUID.randomUUID().toString().substring(0, 8).concat("_").concat(date);
+    }
+
+}
