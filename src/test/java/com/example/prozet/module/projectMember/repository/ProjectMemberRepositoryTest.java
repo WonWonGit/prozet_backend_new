@@ -1,7 +1,5 @@
 package com.example.prozet.module.projectMember.repository;
 
-import static com.example.prozet.modules.member.domain.entity.QMemberEntity.memberEntity;
-import static com.example.prozet.modules.projectMember.domain.entity.QProjectMemberEntity.projectMemberEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -25,6 +23,7 @@ import com.example.prozet.modules.member.repository.MemberRepository;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
 import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberListResDTO;
+import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 import com.example.prozet.modules.projectMember.domain.entity.ProjectMemberEntity;
 import com.example.prozet.modules.projectMember.repository.ProjectMemberRepository;
 import com.querydsl.core.types.Projections;
@@ -36,92 +35,81 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 @TestMethodOrder(OrderAnnotation.class)
 public class ProjectMemberRepositoryTest {
 
-    @Autowired
-    ProjectMemberRepository projectMemberRepository;
+        @Autowired
+        ProjectMemberRepository projectMemberRepository;
 
-    @Autowired
-    ProjectRepository projectRepository;
+        @Autowired
+        ProjectRepository projectRepository;
 
-    @Autowired
-    MemberRepository memberRepository;
+        @Autowired
+        MemberRepository memberRepository;
 
-    @Autowired
-    JPAQueryFactory query;
+        @Autowired
+        JPAQueryFactory query;
 
-    @BeforeEach
-    public void saveProjectMember() {
+        @BeforeEach
+        public void saveProjectMember() {
 
-        MemberEntity memberEntity = MemberEntity.builder().build();
-        MemberEntity memberEntityPS = memberRepository.save(memberEntity);
+                MemberEntity memberEntity = MemberEntity.builder().username("member").build();
+                MemberEntity memberEntityPS = memberRepository.save(memberEntity);
 
-        ProjectEntity projectEntity = ProjectEntity.builder().projectKey("projecKey").build();
-        ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
+                MemberEntity ownerEntity = MemberEntity.builder().username("owner").build();
+                MemberEntity ownerEntityPS = memberRepository.save(ownerEntity);
 
-        ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
-                .access(AccessType.READONLY)
-                .state(StateType.PANDING)
-                .memberEntity(memberEntityPS)
-                .projectEntity(projectEntityPS)
-                .deleteYn("N")
-                .build();
+                ProjectEntity projectEntity = ProjectEntity.builder().owner(ownerEntityPS).projectKey("projecKey")
+                                .build();
+                ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
 
-        ProjectMemberEntity projectMemberEntityPS = projectMemberRepository.save(projectMemberEntity);
+                ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
+                                .access(AccessType.READONLY)
+                                .state(StateType.PANDING)
+                                .memberEntity(memberEntityPS)
+                                .projectEntity(projectEntityPS)
+                                .deleteYn("N")
+                                .build();
 
-        assertThat(projectMemberEntityPS.getAccess()).isEqualTo(AccessType.READONLY);
+                ProjectMemberEntity projectMemberEntityPS = projectMemberRepository.save(projectMemberEntity);
 
-    }
+                assertThat(projectMemberEntityPS.getAccess()).isEqualTo(AccessType.READONLY);
 
-    @Test
-    @Order(1)
-    public void findByProjectEntity_ProjectKeyTest() {
-
-        Optional<ProjectMemberEntity> projectMemberEntity = projectMemberRepository
-                .findByProjectEntity_ProjectKey("projectKey");
-
-        if (projectMemberEntity.isPresent()) {
-            assertThat(projectMemberEntity.get().getState()).isEqualTo(StateType.PANDING);
         }
 
-    }
+        @Test
+        @Order(1)
+        public void findByProjectEntity_ProjectKeyTest() {
 
-    @Test
-    @Order(2)
-    public void getInvitedMemberTest() {
-        ProjectMemberEntity result = query.selectFrom(projectMemberEntity)
-                .where(memberEntity.username.eq("username"),
-                        projectMemberEntity.projectEntity.projectKey.eq("projectKey"),
-                        projectMemberEntity.deleteYn.eq("N"))
-                .fetchFirst();
+                Optional<ProjectMemberEntity> projectMemberEntity = projectMemberRepository
+                                .findByProjectEntity_ProjectKey("projectKey");
 
-        assertThat(result).isEqualTo(null);
-    }
+                if (projectMemberEntity.isPresent()) {
+                        assertThat(projectMemberEntity.get().getState()).isEqualTo(StateType.PANDING);
+                }
 
-    @Test
-    @Order(3)
-    public void getProjectMemberTest() {
-        ProjectMemberEntity result = query.selectFrom(projectMemberEntity)
-                .where(memberEntity.idx.eq(3L),
-                        projectMemberEntity.deleteYn.eq("N"))
-                .fetchFirst();
+        }
 
-        assertThat(result.getState()).isEqualTo(StateType.PANDING);
-    }
+        @Test
+        @Order(2)
+        public void getInvitedMemberTest() {
+                ProjectMemberResDTO result = projectMemberRepository.getInvitedMember("username",
+                                "projectKey");
+                assertThat(result).isEqualTo(null);
+        }
 
-    @Test
-    public void getEditProjectMemberListTest() {
+        @Test
+        @Order(3)
+        public void getProjectMemberTest() {
+                Optional<ProjectMemberResDTO> result = projectMemberRepository.getProjectMember(3L);
 
-        List<ProjectMemberListResDTO> result = query
-                .select(Projections.constructor(ProjectMemberListResDTO.class,
-                        projectMemberEntity.idx,
-                        projectMemberEntity.access,
-                        projectMemberEntity.memberEntity.username))
-                .where(projectMemberEntity.deleteYn.eq("N"),
-                        projectMemberEntity.state.eq(StateType.ACCEPTED),
-                        projectMemberEntity.access.eq(AccessType.EDIT))
-                .from(projectMemberEntity)
-                .fetch();
+                if (result.isPresent()) {
+                        assertThat(result.get().getState()).isEqualTo(StateType.PANDING);
+                }
+        }
 
-        assertThat(result).isEmpty();
-    }
+        @Test
+        public void getEditProjectMemberListTest() {
+
+                List<ProjectMemberListResDTO> result = projectMemberRepository.getEditProjectMemberList("projectKey");
+                assertThat(result).isNull();
+        }
 
 }

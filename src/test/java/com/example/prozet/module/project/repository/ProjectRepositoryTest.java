@@ -49,18 +49,9 @@ public class ProjectRepositoryTest {
     @Test
     public void findProjectListTest() {
 
-        List<ProjectListDTO> results = query.select(Projections.constructor(ProjectListDTO.class,
-                projectEntity.idx,
-                projectEntity.projectKey,
-                projectEntity.projectInformation.title,
-                projectEntity.projectInformation.startDate,
-                projectEntity.projectInformation.endDate,
-                projectEntity.owner)).from(projectEntity)
-                .where(projectEntity.owner.username.eq("username"),
-                        projectEntity.deleteYn.eq("N"))
-                .fetch();
-
+        List<ProjectListDTO> results = projectRepository.getProjectList("username");
         assertThat(results.size()).isEqualTo(0);
+
     }
 
 }

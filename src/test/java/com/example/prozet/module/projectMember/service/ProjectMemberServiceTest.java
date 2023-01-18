@@ -67,8 +67,9 @@ public class ProjectMemberServiceTest {
                                 .projectEntity(projectEntity)
                                 .build();
 
-                when(projectRepository.findByProjectKey(any())).thenReturn(Optional.of(projectEntity));
-                when(projectMemberRepository.getInvitedMember(any(), any())).thenReturn(Optional.empty());
+                when(projectRepository.findByProjectKeyAndDeleteYn(any(), any()))
+                                .thenReturn(Optional.of(projectEntity));
+                when(projectMemberRepository.getInvitedMember(any(), any())).thenReturn(null);
                 when(memberRepository.findByUsername(any())).thenReturn(Optional.of(inviteMember));
                 when(projectMemberRepository.save(any())).thenReturn(projectMemberEntity);
 
@@ -102,7 +103,7 @@ public class ProjectMemberServiceTest {
                                 .build();
 
                 when(projectMemberRepository.getInvitedMember(any(), any()))
-                                .thenReturn(Optional.of(projectMemberEntity.toProjectMemberResDTO()));
+                                .thenReturn(projectMemberEntity.toProjectMemberResDTO());
 
                 boolean result = projectMemberService.editProjectMemberState("inviteMember", "projectKey123");
 

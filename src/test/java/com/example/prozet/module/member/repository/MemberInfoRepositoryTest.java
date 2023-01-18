@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 
 import com.example.prozet.common.CustomException;
 import com.example.prozet.common.ErrorCode;
@@ -21,6 +20,7 @@ import com.example.prozet.enum_pakage.Role;
 import com.example.prozet.modules.file.domain.entity.FileEntity;
 import com.example.prozet.modules.file.domain.entity.FileMasterEntity;
 import com.example.prozet.modules.file.repository.FileMasterRepository;
+import com.example.prozet.modules.file.repository.FileRepository;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.member.domain.entity.MemberInfoEntity;
 import com.example.prozet.modules.member.repository.MemberInfoRepository;
@@ -40,6 +40,9 @@ public class MemberInfoRepositoryTest {
     @Autowired
     FileMasterRepository fileMasterRepository;
 
+    @Autowired
+    FileRepository fileRepository;
+
     private static String username = "username";
 
     @BeforeEach
@@ -55,34 +58,9 @@ public class MemberInfoRepositoryTest {
         memberRepository.save(memberEntity);
     }
 
-    @BeforeEach
-    public void fileMasterSave() {
-        FileMasterEntity fileMasterEntity = FileMasterEntity.builder()
-                .idx(1)
-                .category(FileType.MEMBER_PROFILE.fileType())
-                .build();
-
-        fileMasterRepository.save(fileMasterEntity);
-    }
-
     public MemberEntity getMemberEntity() {
         return memberRepository.findByUsername("username")
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
-    }
-
-    public FileMasterEntity getFileMasterEntity() {
-        return fileMasterRepository.findByIdx(1)
-                .orElseThrow(() -> new CustomException(ErrorCode.FILE_MASTER_NOT_EXIST));
-    }
-
-    public FileEntity getFileEntity() {
-        return FileEntity.builder()
-                .fileMaster(getFileMasterEntity())
-                .extension("img")
-                .originalName("filename")
-                .size(200l)
-                .url("url")
-                .build();
     }
 
     @Test
@@ -103,12 +81,28 @@ public class MemberInfoRepositoryTest {
     @Test
     public void MemberInfoSaveWithFileTest() {
 
+        FileMasterEntity fileMasterEntity = FileMasterEntity.builder()
+                .category(FileType.MEMBER_PROFILE.fileType())
+                .build();
+
+        FileMasterEntity fileMasterEntityPS = fileMasterRepository.save(fileMasterEntity);
+
+        FileEntity fileEntity = FileEntity.builder()
+                .fileMaster(fileMasterEntityPS)
+                .extension("img")
+                .originalName("filename")
+                .size(200l)
+                .url("url")
+                .build();
+
+        fileRepository.save(fileEntity);
+
         MemberInfoEntity memberInfoEntity = MemberInfoEntity.builder()
                 .blog("blog")
                 .github("github")
                 .job("job")
                 .memberEntity(getMemberEntity())
-                .fileMasterEntity(getFileMasterEntity())
+                .fileMasterEntity(fileMasterEntityPS)
                 .build();
 
         MemberInfoEntity memberInfoEntityPS = memberInfoRepository.save(memberInfoEntity);

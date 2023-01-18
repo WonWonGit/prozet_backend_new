@@ -166,7 +166,7 @@ public class ProjectInfoServiceTest {
                 ProjectEntity projectEntity = getProjectEntity();
                 projectEntity.setProjectInformation(projectInfoEntity);
 
-                when(projectRepository.findByProjectKey(any()))
+                when(projectRepository.findByProjectKeyAndDeleteYn(any(), any()))
                                 .thenReturn(Optional.of(projectEntity));
                 when(projectMemberRepository.getEditProjectMemberList(any())).thenReturn(null);
 
@@ -198,7 +198,7 @@ public class ProjectInfoServiceTest {
                 fileMasterEntity.setFileList(List.of(getFileEntity()));
                 FileMasterDTO fileMasterDTO = fileMasterEntity.toFileMasterDTO();
 
-                when(projectRepository.findByProjectKey(any()))
+                when(projectRepository.findByProjectKeyAndDeleteYn(any(), any()))
                                 .thenReturn(Optional.of(projectEntity));
                 when(fileService.fileSave(any(), any())).thenReturn(fileMasterDTO);
 
@@ -231,7 +231,7 @@ public class ProjectInfoServiceTest {
                 fileMasterEntity.setFileList(List.of(getNewFileEntity()));
                 FileMasterDTO fileMasterDTO = fileMasterEntity.toFileMasterDTO();
 
-                when(projectRepository.findByProjectKey(any()))
+                when(projectRepository.findByProjectKeyAndDeleteYn(any(), any()))
                                 .thenReturn(Optional.of(projectEntity));
                 when(fileService.fileUpdate(any(), any(), anyInt())).thenReturn(fileMasterDTO);
 
