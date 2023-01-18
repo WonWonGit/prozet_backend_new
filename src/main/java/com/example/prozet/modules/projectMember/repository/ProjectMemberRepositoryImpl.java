@@ -22,7 +22,7 @@ public class ProjectMemberRepositoryImpl implements ProjectMemberRepositoryCusto
         private final JPAQueryFactory query;
 
         @Override
-        public Optional<ProjectMemberResDTO> getInvitedMember(String projectKey, String username) {
+        public ProjectMemberResDTO getInvitedMember(String projectKey, String username) {
 
                 ProjectMemberEntity result = query.selectFrom(projectMemberEntity)
                                 .where(memberEntity.username.eq(username),
@@ -30,7 +30,10 @@ public class ProjectMemberRepositoryImpl implements ProjectMemberRepositoryCusto
                                                 projectMemberEntity.deleteYn.eq("N"))
                                 .fetchFirst();
 
-                return Optional.ofNullable(result.toProjectMemberResDTO());
+                if (result == null) {
+                        return null;
+                }
+                return result.toProjectMemberResDTO();
         }
 
         // 멤버 조회
@@ -57,6 +60,7 @@ public class ProjectMemberRepositoryImpl implements ProjectMemberRepositoryCusto
                                                 projectMemberEntity.access,
                                                 projectMemberEntity.memberEntity.username))
                                 .where(projectMemberEntity.deleteYn.eq("N"),
+                                                projectMemberEntity.projectEntity.projectKey.eq(projectKey),
                                                 projectMemberEntity.state.eq(StateType.ACCEPTED),
                                                 projectMemberEntity.access.eq(AccessType.EDIT))
                                 .from(projectMemberEntity)
@@ -76,7 +80,10 @@ public class ProjectMemberRepositoryImpl implements ProjectMemberRepositoryCusto
                                                 projectMemberEntity.deleteYn.eq("N"))
                                 .fetchFirst();
 
-                return Optional.ofNullable(result.toProjectMemberResDTO());
+                if (result == null) {
+                        return null;
+                }
+                return Optional.of(result.toProjectMemberResDTO());
         }
 
 }

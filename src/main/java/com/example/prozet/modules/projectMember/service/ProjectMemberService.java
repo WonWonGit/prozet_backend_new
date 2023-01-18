@@ -43,20 +43,20 @@ public class ProjectMemberService {
     @Transactional
     public ProjectMemberResDTO saveProjectMember(ProjectMemberReqDTO projectMemberReqDTO, String owner) {
 
-        ProjectEntity projectEntity = projectRepository.findByProjectKey(projectMemberReqDTO.getProjectKey())
-                .filter(project -> project.getDeleteYn().equals("N"))
+        ProjectEntity projectEntity = projectRepository
+                .findByProjectKeyAndDeleteYn(projectMemberReqDTO.getProjectKey(), "N")
                 .orElseThrow(() -> new CustomException(ErrorCode.FIND_PROJECT_INFO_FAIL));
 
         if (!projectEntity.getOwner().getUsername().equals(owner)) {
             throw new CustomException(ErrorCode.PROJECT_OWNER_ONLY);
         }
 
-        Optional<ProjectMemberResDTO> invitedMember = projectMemberRepository
+        ProjectMemberResDTO invitedMember = projectMemberRepository
                 .getInvitedMember(projectMemberReqDTO.getProjectKey(), projectMemberReqDTO.getUsername());
 
         // member alredy invited
-        if (invitedMember.isPresent()) {
-            return invitedMember.get();
+        if (invitedMember != null) {
+            return invitedMember;
         }
 
         MemberEntity memberEntity = memberRepository.findByUsername(projectMemberReqDTO.getUsername())
@@ -106,14 +106,14 @@ public class ProjectMemberService {
     @Transactional
     public boolean editProjectMemberState(String username, String projectKey) {
 
-        Optional<ProjectMemberResDTO> invitedMember = projectMemberRepository
+        ProjectMemberResDTO invitedMember = projectMemberRepository
                 .getInvitedMember(projectKey, username);
 
-        if (invitedMember.isEmpty()) {
+        if (invitedMember == null) {
             return false;
         }
 
-        invitedMember.get().toEntity().inviteAccept();
+        invitedMember.toEntity().inviteAccept();
         return true;
     }
 

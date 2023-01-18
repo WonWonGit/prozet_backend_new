@@ -1,8 +1,12 @@
 package com.example.prozet.modules.project.domain.dto.response;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.example.prozet.modules.member.domain.dto.response.MemberResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
+import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +21,7 @@ public class ProjectResDTO {
     private String deleteYn;
     private MemberResDTO owner;
     private ProjectInfoResDTO projectInfoResDTO;
+    private List<ProjectMemberResDTO> projectMemberResDTO;
 
     public ProjectEntity toEntity() {
         return ProjectEntity.builder()
@@ -25,6 +30,9 @@ public class ProjectResDTO {
                 .deleteYn(deleteYn)
                 .owner(owner.toEntity())
                 .projectInformation(projectInfoResDTO.toEntity())
+                .ProjectMemberEntity(
+                        projectMemberResDTO != null ? projectMemberResDTO.stream().map(ProjectMemberResDTO::toEntity)
+                                .collect(Collectors.toList()) : null)
                 .build();
     }
 

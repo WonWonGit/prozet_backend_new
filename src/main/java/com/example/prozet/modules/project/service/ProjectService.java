@@ -2,6 +2,7 @@ package com.example.prozet.modules.project.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,17 @@ public class ProjectService {
     @Autowired
     private FileService fileService;
 
+    public ProjectResDTO findByProjectKey(String projectKey) {
+
+        Optional<ProjectEntity> projectEntity = projectRepository.findByProjectKeyAndDeleteYn(projectKey, "N");
+        if (projectEntity.isPresent()) {
+            return projectEntity.get().toProjectResDTO();
+        } else {
+            return null;
+        }
+
+    }
+
     @Transactional
     public ProjectResDTO createProject(MemberEntity memberEntity, ProjectInfoReqDTO projectInfoReqDTO,
             MultipartFile projectImg) {
@@ -69,7 +81,7 @@ public class ProjectService {
 
     @Transactional
     public void deleteProject(String projectKey, String username) {
-        ProjectEntity projectEntity = projectRepository.findByProjectKey(projectKey)
+        ProjectEntity projectEntity = projectRepository.findByProjectKeyAndDeleteYn(projectKey, "N")
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_EXIST));
 
         if (!projectEntity.getOwner().getUsername().equals(username)) {

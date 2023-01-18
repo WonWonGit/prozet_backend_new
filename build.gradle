@@ -77,5 +77,5 @@ sourceSets {
 
 // gradle clean 시에 QClass 디렉토리 삭제
 clean {
-	delete file(generated)
+	delete file('src/main/generated')
 }

@@ -44,8 +44,7 @@ public class ProjectInfoService {
 
         boolean projectMember = false;
 
-        ProjectEntity projectEntity = projectRepository.findByProjectKey(projectKey)
-                .filter(project -> project.getDeleteYn().equals("N"))
+        ProjectEntity projectEntity = projectRepository.findByProjectKeyAndDeleteYn(projectKey, "N")
                 .orElseThrow(() -> new CustomException(ErrorCode.FIND_PROJECT_INFO_FAIL));
 
         List<ProjectMemberListResDTO> projectMemberList = projectMemberRepository.getEditProjectMemberList(projectKey);

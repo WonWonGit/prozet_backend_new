@@ -3,6 +3,7 @@ package com.example.prozet.modules.project.domain.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,6 +20,7 @@ import com.example.prozet.modules.projectInformation.domain.dto.response.Project
 import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
 import com.example.prozet.modules.projectMember.domain.entity.ProjectMemberEntity;
 import com.example.prozet.modules.projectStack.domain.entity.ProjectStackEntity;
+import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -61,6 +63,9 @@ public class ProjectEntity {
 
     @OneToMany(mappedBy = "projectEntity")
     private List<ProjectStackEntity> projectStackEntitiy;
+
+    @OneToOne(mappedBy = "projectEntity", cascade = CascadeType.ALL)
+    private StackCategoryEntity stackCategoryEntity;
 
     public void saveProjectInfoEntity(ProjectInfoEntity projectInfoEntity) {
         this.projectInformation = projectInfoEntity;

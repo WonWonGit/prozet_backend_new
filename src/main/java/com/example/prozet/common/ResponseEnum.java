@@ -23,7 +23,10 @@ public enum ResponseEnum {
 
     SAVE_MEMBER_INVITE_SUCCESS(HttpStatus.OK, "Member invite done"),
     DELETE_MEMBER_SUCCESS(HttpStatus.OK, "delete done"),
-    EDIT_MEMBER_ACCESS_SUCCESS(HttpStatus.OK, "update done");
+    EDIT_MEMBER_ACCESS_SUCCESS(HttpStatus.OK, "update done"),
+
+    SAVE_STACK_SUCCESS(HttpStatus.OK, "Save Stack done"),
+    DELETE_STACK_SUCCESS(HttpStatus.OK, "Delete Stack done");
 
     private final HttpStatus httpCode;
     private final String message;

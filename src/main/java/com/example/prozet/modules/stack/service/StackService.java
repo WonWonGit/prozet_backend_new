@@ -1,5 +1,7 @@
 package com.example.prozet.modules.stack.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,9 +9,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.prozet.common.CustomException;
 import com.example.prozet.common.ErrorCode;
+import com.example.prozet.enum_pakage.FileType;
+import com.example.prozet.enum_pakage.Role;
+import com.example.prozet.modules.file.domain.dto.response.FileMasterDTO;
+import com.example.prozet.modules.file.service.FileService;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
 import com.example.prozet.modules.stack.domain.dto.request.StackReqDTO;
+import com.example.prozet.modules.stack.domain.dto.response.StackCategoryResDTO;
+import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
 import com.example.prozet.modules.stack.repository.StackCategoryRepository;
@@ -28,22 +36,52 @@ public class StackService {
     @Autowired
     private StackCategoryRepository stackCategoryRepository;
 
-    @Transactional
-    public void saveStack(StackReqDTO stackReqDTO, MultipartFile iconImg, String projectKey, String username) {
+    @Autowired
+    private FileService fileService;
 
-        ProjectEntity projectEntity = projectRepository.findByProjectKey(projectKey)
-                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_EXIST));
+    @Transactional
+    public StackResDTO saveStack(StackReqDTO stackReqDTO, MultipartFile iconImg,
+            String username) {
+
+        StackEntity stackEntity = null;
 
         StackCategoryEntity stackCategoryEntity = stackCategoryRepository.findByIdx(stackReqDTO.getStackCategoryIdx())
                 .orElseThrow(() -> new CustomException(ErrorCode.STACK_CATEGORY_NOT_EXIST));
 
         if (iconImg != null) {
 
+            FileMasterDTO fileMasterDTO = fileService.fileSave(FileType.STACK_ICON, iconImg);
+            String iconUrl = fileMasterDTO.getFileList().get(0).getUrl();
+            stackEntity = stackReqDTO.toEntity(iconUrl, stackCategoryEntity);
+
         } else {
-            StackEntity stackEntity = stackReqDTO.toEntity(stackReqDTO.getIconUrl(), stackCategoryEntity);
-            StackEntity stackEntityPS = stackRepository.save(stackEntity);
+            stackEntity = stackReqDTO.toEntity(stackReqDTO.getIconUrl(), stackCategoryEntity);
+
         }
 
+        StackEntity stackEntityPS = stackRepository.save(stackEntity);
+
+        if (stackEntityPS != null) {
+            return stackEntityPS.toStackResDTO();
+        }
+        return null;
+
+    }
+
+    @Transactional
+    public void deleteStackService(StackResDTO stackResDTO) {
+        stackRepository.delete(stackResDTO.toEntity());
+    }
+
+    public StackResDTO findByIdx(Long idx) {
+
+        Optional<StackEntity> stackEntity = stackRepository.findByIdx(idx);
+
+        if (stackEntity.isPresent()) {
+            return stackEntity.get().toStackResDTO();
+        }
+
+        return null;
     }
 
 }

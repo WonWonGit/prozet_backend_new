@@ -10,7 +10,7 @@ import com.example.prozet.modules.projectMember.domain.entity.ProjectMemberEntit
 
 public interface ProjectMemberRepositoryCustom {
 
-    Optional<ProjectMemberResDTO> getInvitedMember(String projectKey, String username);
+    ProjectMemberResDTO getInvitedMember(String projectKey, String username);
 
     Optional<ProjectMemberResDTO> getProjectMember(Long idx);
 

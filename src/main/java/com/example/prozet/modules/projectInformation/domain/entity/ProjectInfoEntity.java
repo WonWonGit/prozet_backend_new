@@ -39,19 +39,9 @@ public class ProjectInfoEntity {
     private LocalDateTime startDate;
     @Column(name = "end_date")
     private LocalDateTime endDate;
-
-    // @OneToOne
-    // @JsonIgnore
-    // @JoinColumn(name = "project_idx", referencedColumnName = "idx")
-    // ProjectEntity projectEntity;
-
     @OneToOne
     @JoinColumn(name = "file_master_idx", referencedColumnName = "idx")
     FileMasterEntity fileMasterEntity;
-
-    // public void saveProjectEntity(ProjectEntity projectEntity) {
-    // this.projectEntity = projectEntity;
-    // }
 
     public void saveFileMasterEntity(FileMasterEntity fileMasterEntity) {
         this.fileMasterEntity = fileMasterEntity;

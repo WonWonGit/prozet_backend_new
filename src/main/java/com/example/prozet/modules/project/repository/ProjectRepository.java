@@ -11,7 +11,7 @@ import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 @Repository
 public interface ProjectRepository extends JpaRepository<ProjectEntity, Long>, ProjectRepositoryCustom {
 
-    Optional<ProjectEntity> findByProjectKey(String projectKey);
+    Optional<ProjectEntity> findByProjectKeyAndDeleteYn(String projectKey, String deleteYn);
 
     // List<ProjectEntity> findByOwner_Username(String username);
 

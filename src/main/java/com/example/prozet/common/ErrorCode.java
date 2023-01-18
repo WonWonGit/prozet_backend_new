@@ -6,6 +6,7 @@ import lombok.Getter;
 /**
  * not exist from db -> 500
  * controller not found -> 404
+ * [save, update, delete] _ [name] _ [fail, notExist, notFound]
  * 
  */
 @Getter
@@ -44,7 +45,11 @@ public enum ErrorCode {
     PROJECT_INVITATION_EXPIRED(HttpStatus.UNAUTHORIZED, "ECPM000", "Invitation is expired"),
     PROJECT_MEMBER_NOT_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "ECPM000", "Project member is not exist"),
 
-    STACK_CATEGORY_NOT_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "ECS000", "Stack category is not exist");
+    STACK_CATEGORY_NOT_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "ECS000", "Stack category is not exist"),
+    SAVE_STACK_FAIL(HttpStatus.BAD_REQUEST, "ECS000", "Faile save stack"),
+    STACK_NOT_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "ECS001", "Stack is not Exist"),
+    STACK_FORBIDDEN(HttpStatus.FORBIDDEN, "ESC000", "Admin Only");
+    ;
 
     private final HttpStatus httpStatus;
     private final String code;
