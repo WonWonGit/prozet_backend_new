@@ -20,6 +20,7 @@ import com.example.prozet.modules.project.domain.dto.response.ProjectListDTO;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
+import com.example.prozet.modules.project.utils.ProjectUtil;
 import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectInfoReqDTO;
 import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
 import com.example.prozet.modules.projectInformation.repository.ProjectInfoRepository;
@@ -63,7 +64,7 @@ public class ProjectService {
 
         ProjectEntity projectEntity = ProjectEntity.builder()
                 .owner(memberEntity)
-                .projectKey(createProjectKey())
+                .projectKey(ProjectUtil.createProjectKey())
                 .deleteYn("N")
                 .build();
 
@@ -99,12 +100,6 @@ public class ProjectService {
 
         return projectList;
 
-    }
-
-    public String createProjectKey() {
-        String date = UtilsClass.getCurrentDate();
-
-        return UUID.randomUUID().toString().substring(0, 8).concat("_").concat(date);
     }
 
 }
