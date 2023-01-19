@@ -26,7 +26,10 @@ public enum ResponseEnum {
     EDIT_MEMBER_ACCESS_SUCCESS(HttpStatus.OK, "update done"),
 
     SAVE_STACK_SUCCESS(HttpStatus.OK, "Save Stack done"),
-    DELETE_STACK_SUCCESS(HttpStatus.OK, "Delete Stack done");
+    DELETE_STACK_SUCCESS(HttpStatus.OK, "Delete Stack done"),
+
+    SAVE_STACK_CATEGORY_SUCCESS(HttpStatus.OK, "Save stack category done"),
+    ;
 
     private final HttpStatus httpCode;
     private final String message;

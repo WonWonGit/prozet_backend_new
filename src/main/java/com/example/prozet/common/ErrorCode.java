@@ -6,6 +6,8 @@ import lombok.Getter;
 /**
  * not exist from db -> 500
  * controller not found -> 404
+ * forbidden -> get
+ * UNAUTHORIZED -> post
  * [save, update, delete] _ [name] _ [fail, notExist, notFound]
  * 
  */
@@ -48,8 +50,10 @@ public enum ErrorCode {
     STACK_CATEGORY_NOT_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "ECS000", "Stack category is not exist"),
     SAVE_STACK_FAIL(HttpStatus.BAD_REQUEST, "ECS000", "Faile save stack"),
     STACK_NOT_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "ECS001", "Stack is not Exist"),
-    STACK_FORBIDDEN(HttpStatus.FORBIDDEN, "ESC000", "Admin Only");
-    ;
+    STACK_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "ECS000", "Admin Only"),
+    SAVE_STACK_CATEGORY_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "ESC001", "Owner or access denied"),
+    SAVE_STACK_CATEGORY_FAIL(HttpStatus.BAD_REQUEST, "ECS000", "Fail save stack category"),
+    DELETE_STACK_FAIL(HttpStatus.BAD_REQUEST, "ECS001", "Fail delete stack category");
 
     private final HttpStatus httpStatus;
     private final String code;
