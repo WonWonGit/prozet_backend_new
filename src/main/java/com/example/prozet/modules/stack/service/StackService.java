@@ -11,6 +11,7 @@ import com.example.prozet.common.CustomException;
 import com.example.prozet.common.ErrorCode;
 import com.example.prozet.enum_pakage.FileType;
 import com.example.prozet.enum_pakage.Role;
+import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.file.domain.dto.response.FileMasterDTO;
 import com.example.prozet.modules.file.service.FileService;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
@@ -52,10 +53,20 @@ public class StackService {
 
             FileMasterDTO fileMasterDTO = fileService.fileSave(FileType.STACK_ICON, iconImg);
             String iconUrl = fileMasterDTO.getFileList().get(0).getUrl();
-            stackEntity = stackReqDTO.toEntity(iconUrl, stackCategoryEntity);
+            stackEntity = StackEntity.builder()
+                    .name(stackReqDTO.getName())
+                    .icon(iconUrl)
+                    .stackCategory(stackCategoryEntity)
+                    .stackType(StackType.CUSTOMSTACK)
+                    .build();
 
         } else {
-            stackEntity = stackReqDTO.toEntity(stackReqDTO.getIconUrl(), stackCategoryEntity);
+            stackEntity = StackEntity.builder()
+                    .name(stackReqDTO.getName())
+                    .icon(stackReqDTO.getIconUrl())
+                    .stackCategory(stackCategoryEntity)
+                    .stackType(StackType.CUSTOMSTACK)
+                    .build();
 
         }
 

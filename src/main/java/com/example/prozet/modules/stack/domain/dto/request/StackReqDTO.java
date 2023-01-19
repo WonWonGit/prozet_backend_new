@@ -23,13 +23,4 @@ public class StackReqDTO {
     @NotBlank(message = "Stack Category is require.")
     private int StackCategoryIdx;
 
-    public StackEntity toEntity(String iconUrl, StackCategoryEntity stackCategoryEntity) {
-        return StackEntity.builder()
-                .name(name)
-                .icon(iconUrl)
-                .role(Role.USER)
-                .stackCategory(stackCategoryEntity)
-                .build();
-    }
-
 }

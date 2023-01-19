@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.ManyToAny;
 
 import com.example.prozet.enum_pakage.Role;
+import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
@@ -26,7 +27,7 @@ public class StackCategoryResDTO {
 
     private int idx;
     private String category;
-    private Role role;
+    private StackType stackType;
     private ProjectResDTO projectResDTO;
     private List<StackResDTO> stacks;
 
@@ -38,7 +39,7 @@ public class StackCategoryResDTO {
                 .stacks(stacks != null ? stacks.stream()
                         .map(StackResDTO::toEntity)
                         .collect(Collectors.toList()) : null)
-                .role(role)
+                .stackType(stackType)
                 .build();
     }
 

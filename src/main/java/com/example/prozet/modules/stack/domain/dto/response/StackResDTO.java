@@ -3,6 +3,7 @@ package com.example.prozet.modules.stack.domain.dto.response;
 import javax.persistence.Access;
 
 import com.example.prozet.enum_pakage.Role;
+import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
 
 import antlr.collections.Stack;
@@ -20,7 +21,7 @@ public class StackResDTO {
     private Long idx;
     private String name;
     private String icon;
-    private Role role;
+    private StackType stackType;
     private StackCategoryResDTO stackCategory;
 
     public StackEntity toEntity() {
@@ -28,7 +29,7 @@ public class StackResDTO {
                 .idx(idx)
                 .name(name)
                 .icon(icon)
-                .role(role)
+                .stackType(stackType)
                 .stackCategory(stackCategory.toEntity())
                 .build();
     }

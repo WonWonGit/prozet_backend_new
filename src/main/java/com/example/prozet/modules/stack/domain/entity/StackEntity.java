@@ -1,6 +1,7 @@
 package com.example.prozet.modules.stack.domain.entity;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -14,6 +15,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.example.prozet.enum_pakage.Role;
+import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
 
 import lombok.AllArgsConstructor;
@@ -35,7 +37,8 @@ public class StackEntity {
     private String name;
     private String icon;
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @Column(name = "stack_type")
+    private StackType stackType;
 
     @ManyToOne
     @JoinColumn(name = "stack_category_idx", referencedColumnName = "idx")
@@ -46,7 +49,7 @@ public class StackEntity {
                 .idx(idx)
                 .name(name)
                 .icon(icon)
-                .role(role)
+                .stackType(stackType)
                 .stackCategory(stackCategory.toStackCategoryResDTO())
                 .build();
 
