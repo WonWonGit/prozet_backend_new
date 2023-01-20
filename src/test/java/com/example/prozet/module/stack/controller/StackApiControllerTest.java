@@ -1,9 +1,9 @@
 package com.example.prozet.module.stack.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.HashMap;
@@ -16,34 +16,34 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.example.prozet.enum_pakage.StackType;
-import com.example.prozet.modules.member.domain.dto.response.MemberResDTO;
-import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.service.ProjectService;
-import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
+import com.example.prozet.modules.stack.domain.dto.request.StackReqDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackCategoryResDTO;
-import com.example.prozet.modules.stack.service.StackCategoryService;
+import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
+import com.example.prozet.modules.stack.service.StackService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class StackCategoryApiControllerTest {
+public class StackApiControllerTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @MockBean
-    private ProjectService projectService;
+    private StackService stackService;
 
     @MockBean
-    private StackCategoryService stackCategoryService;
+    private ProjectService projectService;
 
     @Value("${jwt.access_header_string}")
     private String accessHeader;
@@ -70,32 +70,32 @@ public class StackCategoryApiControllerTest {
 
     @Test
     @WithMockUser(username = "google_123123", value = "user")
-    public void saveStackCategoryTest() throws JsonProcessingException, Exception {
+    public void saveStackTest() throws Exception {
 
-        MemberResDTO owner = MemberResDTO.builder().username("google_123123").build();
+        StackCategoryResDTO stackCategoryResDTO = StackCategoryResDTO.builder()
+                .idx(1)
+                .category("backend")
+                .projectResDTO(null)
+                .stackType(StackType.DEFAULTSTACK).build();
 
-        ProjectInfoResDTO projectInfoResDTO = ProjectInfoResDTO.builder()
-                .title("projectTitle")
+        StackResDTO stackResDTO = StackResDTO.builder()
+                .icon("iconUrl")
+                .name("stack")
+                .stackCategory(stackCategoryResDTO)
+                .stackType(StackType.CUSTOMSTACK)
                 .build();
 
-        ProjectResDTO projectResDTO = ProjectResDTO.builder()
-                .owner(owner)
-                .projectInfoResDTO(projectInfoResDTO)
-                .projectKey("projectKey")
-                .build();
+        StackReqDTO stackReqDTO = StackReqDTO.builder().iconUrl("iconUrl").StackCategoryIdx(1).name("stack").build();
 
-        StackCategoryResDTO stackCategoryResDTO = StackCategoryResDTO.builder().category("category")
-                .projectResDTO(projectResDTO).stackType(StackType.CUSTOMSTACK).build();
+        when(stackService.saveStack(any(), any(), any())).thenReturn(stackResDTO);
 
-        when(projectService.findByProjectKey(anyString())).thenReturn(projectResDTO);
-        when(stackCategoryService.stackCategorySave(any(), any())).thenReturn(stackCategoryResDTO);
+        MockMultipartFile stackRequest = new MockMultipartFile("stackReqDTO", "", MediaType.APPLICATION_JSON_VALUE,
+                objectMapper.writeValueAsString(stackReqDTO).getBytes());
 
-        String stackCategory = "stack";
-
-        mockMvc.perform(post("/v1/api/stackCategory/12112")
+        mockMvc.perform(multipart("/v1/api/stack")
+                .file(stackRequest)
                 .header(accessHeader, BEARER + accessToken())
-                .content(stackCategory))
-                // .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk());
 
     }
