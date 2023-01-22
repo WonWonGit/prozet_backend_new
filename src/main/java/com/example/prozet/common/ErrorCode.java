@@ -53,7 +53,11 @@ public enum ErrorCode {
     STACK_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "ECS000", "Admin Only"),
     SAVE_STACK_CATEGORY_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "ESC001", "Owner or access denied"),
     SAVE_STACK_CATEGORY_FAIL(HttpStatus.BAD_REQUEST, "ECS000", "Fail save stack category"),
-    DELETE_STACK_FAIL(HttpStatus.BAD_REQUEST, "ECS001", "Fail delete stack category");
+    DELETE_STACK_FAIL(HttpStatus.BAD_REQUEST, "ECS001", "Fail delete stack category"),
+
+    SAVE_PROJECT_STACK_FAIL(HttpStatus.BAD_REQUEST, "ECPS00", "Fail save project stack"),
+    PROJECT_STACK_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "ECPS00", "Project owner only or access type edit only"),
+    ;
 
     private final HttpStatus httpStatus;
     private final String code;

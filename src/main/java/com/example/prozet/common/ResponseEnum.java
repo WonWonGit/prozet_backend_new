@@ -29,7 +29,8 @@ public enum ResponseEnum {
     DELETE_STACK_SUCCESS(HttpStatus.OK, "Delete Stack done"),
 
     SAVE_STACK_CATEGORY_SUCCESS(HttpStatus.OK, "Save stack category done"),
-    ;
+
+    SAVE_PROJECT_STACK_SUCCESS(HttpStatus.OK, "Save project stack done");
 
     private final HttpStatus httpCode;
     private final String message;

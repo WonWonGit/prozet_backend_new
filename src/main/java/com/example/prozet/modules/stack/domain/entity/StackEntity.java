@@ -1,6 +1,5 @@
 package com.example.prozet.modules.stack.domain.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,11 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.example.prozet.enum_pakage.Role;
 import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
 

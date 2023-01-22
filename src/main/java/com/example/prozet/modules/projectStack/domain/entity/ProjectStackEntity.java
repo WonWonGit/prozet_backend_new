@@ -9,8 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.example.prozet.modules.file.domain.entity.FileMasterEntity;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
+import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
 
 @Entity
@@ -22,15 +22,19 @@ public class ProjectStackEntity {
     private Long idx;
 
     @OneToOne
-    @JoinColumn(name = "file_master_idx")
-    private FileMasterEntity fileMasterEntity;
-
-    @OneToOne
     @JoinColumn(name = "stack_idx")
-    private StackEntity stack;
+    private StackEntity stackEntity;
 
     @ManyToOne
     @JoinColumn(name = "project_idx")
     private ProjectEntity projectEntity;
+
+    public ProjectStackResDTO toProjectStackResDTO() {
+        return ProjectStackResDTO.builder()
+                .idx(idx)
+                .stackResDTO(stackEntity.toStackResDTO())
+                .build();
+
+    }
 
 }
