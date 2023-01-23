@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,6 +22,7 @@ import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEn
 import com.example.prozet.modules.projectMember.domain.entity.ProjectMemberEntity;
 import com.example.prozet.modules.projectStack.domain.entity.ProjectStackEntity;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
+import com.example.prozet.modules.stack.domain.entity.StackEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -64,8 +66,11 @@ public class ProjectEntity {
     @OneToMany(mappedBy = "projectEntity")
     private List<ProjectStackEntity> projectStackEntitiy;
 
-    @OneToOne(mappedBy = "projectEntity", cascade = CascadeType.ALL)
-    private StackCategoryEntity stackCategoryEntity;
+    @OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<StackCategoryEntity> stackCategoryEntity;
+
+    @OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<StackEntity> stackEntity;
 
     public void saveProjectInfoEntity(ProjectInfoEntity projectInfoEntity) {
         this.projectInformation = projectInfoEntity;

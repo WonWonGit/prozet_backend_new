@@ -8,6 +8,6 @@ import com.example.prozet.modules.projectStack.domain.entity.ProjectStackEntity;
 
 public interface ProjectStackRepository extends JpaRepository<ProjectStackEntity, Long> {
 
-    Optional<ProjectStackEntity> findByidx(Long idx);
+    Optional<ProjectStackEntity> findByIdx(Long idx);
 
 }

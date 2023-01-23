@@ -21,7 +21,6 @@ import com.example.prozet.modules.project.utils.ProjectUtil;
 import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackResDTO;
 import com.example.prozet.modules.projectStack.service.ProjectStackService;
 import com.example.prozet.security.auth.PrincipalDetails;
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Attr;
 
 @RestController
 @RequestMapping("v1/api/project/stack")
@@ -54,11 +53,18 @@ public class ProjectStackApiController {
 
             List<ProjectStackResDTO> projectStackResDTO = projectStackService.saveProjectStack(projectStackIdxList);
 
-            return ResponseDTO.toResponseEntity(ResponseEnum.SAVE_PROJECT_STACK_SUCCESS, projectStackResDTO);
+            if (projectStackResDTO.isEmpty()) {
+
+                return ErrorResponse.toResponseEntity(ErrorCode.SAVE_PROJECT_STACK_FAIL);
+
+            } else {
+                return ResponseDTO.toResponseEntity(ResponseEnum.SAVE_PROJECT_STACK_SUCCESS, projectStackResDTO);
+
+            }
 
         }
 
-        return ErrorResponse.toResponseEntity(ErrorCode.SAVE_PROJECT_STACK_FAIL);
+        return ErrorResponse.toResponseEntity(ErrorCode.PROJECT_STACK_UNAUTHORIZED);
 
     }
 
