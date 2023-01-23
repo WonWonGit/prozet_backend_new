@@ -38,21 +38,37 @@ public class StackApiController {
     @Autowired
     private ProjectService projectService;
 
-    @PostMapping
+    @PostMapping("{projectKey}")
     public ResponseEntity<?> saveStack(
+            @PathVariable String projectKey,
             @Valid @RequestPart(required = true) StackReqDTO stackReqDTO,
             @RequestPart(required = false, name = "iconImg") MultipartFile iconImg,
             Authentication authentication) {
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        ProjectResDTO projectResDTO = projectService.findByProjectKey(projectKey);
+        String username = principalDetails.getUsername();
 
-        StackResDTO stackResDTO = stackService.saveStack(stackReqDTO, iconImg, principalDetails.getUsername());
-
-        if (stackReqDTO == null) {
-            return ErrorResponse.toResponseEntity(ErrorCode.SAVE_STACK_FAIL);
+        if (projectResDTO == null) {
+            return ErrorResponse.toResponseEntity(ErrorCode.PROJECT_NOT_EXIST);
         }
 
-        return ResponseDTO.toResponseEntity(ResponseEnum.SAVE_STACK_SUCCESS, stackResDTO);
+        boolean owner = ProjectUtil.projectOwnerCheck(projectResDTO.getOwner(), username);
+        boolean memberAccessEdit = ProjectUtil.projectMemberAccessEditCheck(projectResDTO.getProjectMemberResDTO(),
+                username);
+
+        if (owner || memberAccessEdit) {
+            StackResDTO stackResDTO = stackService.saveStack(stackReqDTO, iconImg);
+
+            if (stackReqDTO == null) {
+                return ErrorResponse.toResponseEntity(ErrorCode.SAVE_STACK_FAIL);
+            } else {
+                return ResponseDTO.toResponseEntity(ResponseEnum.SAVE_STACK_SUCCESS, stackResDTO);
+            }
+
+        }
+
+        return ErrorResponse.toResponseEntity(ErrorCode.STACK_UNAUTHORIZED);
     }
 
     @DeleteMapping("/{idx}")

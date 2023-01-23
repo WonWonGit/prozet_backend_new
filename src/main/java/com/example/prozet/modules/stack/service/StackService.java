@@ -10,14 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.prozet.common.CustomException;
 import com.example.prozet.common.ErrorCode;
 import com.example.prozet.enum_pakage.FileType;
-import com.example.prozet.enum_pakage.Role;
 import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.file.domain.dto.response.FileMasterDTO;
 import com.example.prozet.modules.file.service.FileService;
-import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
 import com.example.prozet.modules.stack.domain.dto.request.StackReqDTO;
-import com.example.prozet.modules.stack.domain.dto.response.StackCategoryResDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
@@ -41,8 +38,7 @@ public class StackService {
     private FileService fileService;
 
     @Transactional
-    public StackResDTO saveStack(StackReqDTO stackReqDTO, MultipartFile iconImg,
-            String username) {
+    public StackResDTO saveStack(StackReqDTO stackReqDTO, MultipartFile iconImg) {
 
         StackEntity stackEntity = null;
 

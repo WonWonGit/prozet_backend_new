@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.example.prozet.enum_pakage.StackType;
+import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
 
 import lombok.AllArgsConstructor;
@@ -35,6 +36,10 @@ public class StackEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "stack_type")
     private StackType stackType;
+
+    @ManyToOne
+    @JoinColumn(name = "project_idx", referencedColumnName = "idx")
+    private ProjectEntity projectEntity;
 
     @ManyToOne
     @JoinColumn(name = "stack_category_idx", referencedColumnName = "idx")

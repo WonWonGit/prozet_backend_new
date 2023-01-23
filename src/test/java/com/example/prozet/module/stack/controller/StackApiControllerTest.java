@@ -2,6 +2,7 @@ package com.example.prozet.module.stack.controller;
 
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,6 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.example.prozet.enum_pakage.StackType;
+import com.example.prozet.modules.member.domain.dto.response.MemberResDTO;
+import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.service.ProjectService;
 import com.example.prozet.modules.stack.domain.dto.request.StackReqDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackCategoryResDTO;
@@ -85,14 +88,22 @@ public class StackApiControllerTest {
                 .stackType(StackType.CUSTOMSTACK)
                 .build();
 
+        MemberResDTO memberResDTO = MemberResDTO.builder().username("google_123123").build();
+
+        ProjectResDTO projectResDTO = ProjectResDTO.builder()
+                .projectKey("projectKey")
+                .owner(memberResDTO)
+                .build();
+
         StackReqDTO stackReqDTO = StackReqDTO.builder().iconUrl("iconUrl").StackCategoryIdx(1).name("stack").build();
 
-        when(stackService.saveStack(any(), any(), any())).thenReturn(stackResDTO);
+        when(projectService.findByProjectKey(anyString())).thenReturn(projectResDTO);
+        when(stackService.saveStack(any(), any())).thenReturn(stackResDTO);
 
         MockMultipartFile stackRequest = new MockMultipartFile("stackReqDTO", "", MediaType.APPLICATION_JSON_VALUE,
                 objectMapper.writeValueAsString(stackReqDTO).getBytes());
 
-        mockMvc.perform(multipart("/v1/api/stack")
+        mockMvc.perform(multipart("/v1/api/stack/projectKey")
                 .file(stackRequest)
                 .header(accessHeader, BEARER + accessToken())
                 .contentType(MediaType.MULTIPART_FORM_DATA))

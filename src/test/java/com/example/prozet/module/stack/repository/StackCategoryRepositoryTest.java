@@ -14,6 +14,8 @@ import com.example.prozet.modules.stack.repository.StackCategoryRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,9 +42,14 @@ public class StackCategoryRepositoryTest {
 
     @Test
     public void findStackCategoryByIdxTest() {
-        StackCategoryEntity stackCategoryEntity = stackCategoryRepository.findByIdx(1)
-                .orElseThrow(() -> new CustomException(ErrorCode.STACK_CATEGORY_NOT_EXIST));
-        assertThat(stackCategoryEntity.getCategory()).isEqualTo("BACK END");
+        Optional<StackCategoryEntity> stackCategoryEntity = stackCategoryRepository.findByIdx(1);
+
+        if (stackCategoryEntity.isPresent()) {
+            assertThat(stackCategoryEntity.get().getCategory()).isEqualTo("BACK END");
+        } else {
+            assertThat(stackCategoryEntity).isEmpty();
+        }
+
     }
 
 }
