@@ -17,7 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
-import com.example.prozet.modules.project.utils.ProjectUtil;
 import com.example.prozet.modules.stack.domain.dto.request.StackReqDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
@@ -27,7 +26,6 @@ import com.example.prozet.modules.stack.repository.StackRepository;
 import com.example.prozet.modules.stack.service.StackService;
 
 @ExtendWith(MockitoExtension.class)
-
 public class StackServiceTest {
 
     @InjectMocks
@@ -40,7 +38,7 @@ public class StackServiceTest {
     private StackCategoryRepository stackCategoryRepository;
 
     @Test
-    public void stackSaveTest() {
+    public void saveStackTest() {
 
         MemberEntity owner = MemberEntity.builder().username("username").build();
 

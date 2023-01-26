@@ -57,7 +57,7 @@ public class StackCategoryServiceTest {
 
         when(stackCategoryRepository.save(any())).thenReturn(stackCategoryEntity);
 
-        StackCategoryResDTO stackCategoryResDTO = stackCategoryService.stackCategorySave("stack Category",
+        StackCategoryResDTO stackCategoryResDTO = stackCategoryService.saveStackCategory("stack Category",
                 projectEntity.toProjectResDTO());
 
         assertThat(stackCategoryResDTO.getCategory()).isEqualTo("backend");

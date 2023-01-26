@@ -15,7 +15,7 @@ public class StackCategoryService {
     @Autowired
     private StackCategoryRepository stackCategoryRepository;
 
-    public StackCategoryResDTO stackCategorySave(String stackCategory, ProjectResDTO projectResDTO) {
+    public StackCategoryResDTO saveStackCategory(String stackCategory, ProjectResDTO projectResDTO) {
 
         StackCategoryEntity stackCategoryEntity = StackCategoryEntity.builder()
                 .category(stackCategory)

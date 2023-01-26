@@ -52,7 +52,7 @@ public class StackCategoryApiController {
 
         if (projectMemberAccess || projectOwnerCheck) {
 
-            StackCategoryResDTO stackCategoryResDTO = stackCategoryService.stackCategorySave(stackCategory,
+            StackCategoryResDTO stackCategoryResDTO = stackCategoryService.saveStackCategory(stackCategory,
                     projectResDTO);
 
             if (stackCategory != null) {
