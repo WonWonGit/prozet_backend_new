@@ -61,6 +61,7 @@ public class ProjectStackRepositoryTest {
 
                 ProjectStackEntity projectStackEntity = ProjectStackEntity.builder()
                                 .projectEntity(projectEntity)
+                                .checkedYn("Y")
                                 .stackEntity(stackEntityPS).build();
 
                 projectStackRepository.save(projectStackEntity);

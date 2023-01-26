@@ -33,7 +33,7 @@ public class ProjectStackApiController {
     private ProjectStackService projectStackService;
 
     @PostMapping("/{projectKey}")
-    public ResponseEntity<?> saveProjectStack(@RequestBody List<Long> projectStackIdxList,
+    public ResponseEntity<?> saveProjectStack(@RequestBody List<Long> stackIdxList,
             @PathVariable String projectKey,
             Authentication authentication) {
 
@@ -51,7 +51,8 @@ public class ProjectStackApiController {
 
         if (membeAccessEdit || projectOwner) {
 
-            List<ProjectStackResDTO> projectStackResDTO = projectStackService.saveProjectStack(projectStackIdxList);
+            List<ProjectStackResDTO> projectStackResDTO = projectStackService.saveProjectStack(stackIdxList,
+                    projectResDTO);
 
             if (projectStackResDTO.isEmpty()) {
 

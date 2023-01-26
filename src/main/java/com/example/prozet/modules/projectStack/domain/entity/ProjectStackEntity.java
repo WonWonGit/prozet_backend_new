@@ -36,12 +36,27 @@ public class ProjectStackEntity {
     @JoinColumn(name = "project_idx")
     private ProjectEntity projectEntity;
 
+    private String checkedYn;
+
     public ProjectStackResDTO toProjectStackResDTO() {
         return ProjectStackResDTO.builder()
                 .idx(idx)
                 .stackResDTO(stackEntity.toStackResDTO())
+                .checkedYn(checkedYn)
                 .build();
 
+    }
+
+    public void saveCheckedYn() {
+        this.checkedYn = "Y";
+    }
+
+    public void editCheckedYn(String checkYn) {
+        if (checkYn.equals("Y")) {
+            this.checkedYn = "N";
+        } else {
+            this.checkedYn = "Y";
+        }
     }
 
 }
