@@ -29,7 +29,7 @@ public class ProjectResDTO {
                 .projectKey(projectKey)
                 .deleteYn(deleteYn)
                 .owner(owner.toEntity())
-                .projectInformation(projectInfoResDTO.toEntity())
+                .projectInformation(projectInfoResDTO != null ? projectInfoResDTO.toEntity() : null)
                 .ProjectMemberEntity(
                         projectMemberResDTO != null ? projectMemberResDTO.stream().map(ProjectMemberResDTO::toEntity)
                                 .collect(Collectors.toList()) : null)
