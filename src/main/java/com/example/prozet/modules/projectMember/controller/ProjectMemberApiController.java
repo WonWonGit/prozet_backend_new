@@ -60,7 +60,7 @@ public class ProjectMemberApiController {
 
         if (projectMemberResDTO != null) {
 
-            return ResponseDTO.toResponseEntity(ResponseEnum.EDIT_MEMBER_ACCESS_SUCCESS, projectMemberResDTO);
+            return ResponseDTO.toResponseEntity(ResponseEnum.UPDATE_MEMBER_ACCESS_SUCCESS, projectMemberResDTO);
         }
 
         return ErrorResponse.toResponseEntity(ErrorCode.PROJECT_INFO_UPDATE_FAIL);

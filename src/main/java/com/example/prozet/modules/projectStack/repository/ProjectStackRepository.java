@@ -10,4 +10,6 @@ public interface ProjectStackRepository extends JpaRepository<ProjectStackEntity
 
     Optional<ProjectStackEntity> findByIdx(Long idx);
 
+    Optional<ProjectStackEntity> findByStackEntity_Idx(Long idx);
+
 }

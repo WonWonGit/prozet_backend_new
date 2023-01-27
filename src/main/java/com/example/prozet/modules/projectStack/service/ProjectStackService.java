@@ -45,4 +45,28 @@ public class ProjectStackService {
 
     }
 
+    @Transactional
+    public List<ProjectStackResDTO> editProjectStack(List<Long> stackIdxList, ProjectResDTO projectResDTO) {
+
+        List<ProjectStackResDTO> projectStackResDTOList = new ArrayList<ProjectStackResDTO>();
+
+        stackIdxList.forEach(stackIdx -> {
+            Optional<ProjectStackEntity> projectStack = projectStackRepository.findByStackEntity_Idx(stackIdx);
+            if (projectStack.isPresent()) {
+                projectStack.get().editCheckedYn(projectStack.get().getCheckedYn());
+                projectStackResDTOList.add(projectStack.get().toProjectStackResDTO());
+            } else {
+                Optional<StackEntity> stackEntity = stackRepository.findByIdx(stackIdx);
+                ProjectStackEntity projectStackEntity = ProjectStackEntity.builder()
+                        .projectEntity(projectResDTO.toEntity())
+                        .stackEntity(stackEntity.get()).checkedYn("Y").build();
+                ProjectStackEntity projectStackEntityPS = projectStackRepository.save(projectStackEntity);
+                projectStackResDTOList.add(projectStackEntityPS.toProjectStackResDTO());
+            }
+        });
+
+        return projectStackResDTOList;
+
+    }
+
 }

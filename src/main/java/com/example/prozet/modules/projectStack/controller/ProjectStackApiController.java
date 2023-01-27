@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,6 +61,43 @@ public class ProjectStackApiController {
 
             } else {
                 return ResponseDTO.toResponseEntity(ResponseEnum.SAVE_PROJECT_STACK_SUCCESS, projectStackResDTO);
+
+            }
+
+        }
+
+        return ErrorResponse.toResponseEntity(ErrorCode.PROJECT_STACK_UNAUTHORIZED);
+
+    }
+
+    @PutMapping("/{projectKey}")
+    public ResponseEntity<?> editProjectStack(@RequestBody List<Long> stackIdxList,
+            @PathVariable String projectKey,
+            Authentication authentication) {
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String username = principalDetails.getUsername();
+        ProjectResDTO projectResDTO = projectService.findByProjectKey(projectKey);
+
+        if (projectResDTO == null) {
+            return ErrorResponse.toResponseEntity(ErrorCode.PROJECT_NOT_EXIST);
+        }
+
+        boolean membeAccessEdit = ProjectUtil.projectMemberAccessEditCheck(projectResDTO.getProjectMemberResDTO(),
+                username);
+        boolean projectOwner = ProjectUtil.projectOwnerCheck(projectResDTO.getOwner(), username);
+
+        if (membeAccessEdit || projectOwner) {
+
+            List<ProjectStackResDTO> projectStackResDTO = projectStackService.editProjectStack(stackIdxList,
+                    projectResDTO);
+
+            if (projectStackResDTO.isEmpty()) {
+
+                return ErrorResponse.toResponseEntity(ErrorCode.UPDATE_PROJECT_STACK_FAIL);
+
+            } else {
+                return ResponseDTO.toResponseEntity(ResponseEnum.UPDATE_PROJECT_STACK_SUCCESS, projectStackResDTO);
 
             }
 

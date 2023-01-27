@@ -56,6 +56,7 @@ public enum ErrorCode {
     DELETE_STACK_FAIL(HttpStatus.BAD_REQUEST, "ECS001", "Fail delete stack category"),
 
     SAVE_PROJECT_STACK_FAIL(HttpStatus.BAD_REQUEST, "ECPS00", "Fail save project stack"),
+    UPDATE_PROJECT_STACK_FAIL(HttpStatus.BAD_REQUEST, "ECPS01", "Fail update project stack"),
     PROJECT_STACK_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "ECPS00", "Project owner only or access type edit only"),
     ;
 

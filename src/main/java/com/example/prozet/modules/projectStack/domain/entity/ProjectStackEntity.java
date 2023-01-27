@@ -15,6 +15,7 @@ import com.example.prozet.modules.stack.domain.entity.StackEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class ProjectStackEntity {
 
     @Id
