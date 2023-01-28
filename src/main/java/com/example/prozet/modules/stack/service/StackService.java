@@ -16,6 +16,7 @@ import com.example.prozet.modules.file.service.FileService;
 import com.example.prozet.modules.project.repository.ProjectRepository;
 import com.example.prozet.modules.stack.domain.dto.request.StackReqDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
+import com.example.prozet.modules.stack.domain.dto.response.StackUnmappedResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
 import com.example.prozet.modules.stack.repository.StackCategoryRepository;
@@ -38,7 +39,7 @@ public class StackService {
     private FileService fileService;
 
     @Transactional
-    public StackResDTO saveStack(StackReqDTO stackReqDTO, MultipartFile iconImg) {
+    public StackUnmappedResDTO saveStack(StackReqDTO stackReqDTO, MultipartFile iconImg) {
 
         StackEntity stackEntity = null;
 
@@ -69,7 +70,7 @@ public class StackService {
         StackEntity stackEntityPS = stackRepository.save(stackEntity);
 
         if (stackEntityPS != null) {
-            return stackEntityPS.toStackResDTO();
+            return stackEntityPS.toStackUnmappedResDTO();
         }
         return null;
 

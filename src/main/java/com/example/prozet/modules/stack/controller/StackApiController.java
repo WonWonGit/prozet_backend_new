@@ -25,6 +25,7 @@ import com.example.prozet.modules.project.service.ProjectService;
 import com.example.prozet.modules.project.utils.ProjectUtil;
 import com.example.prozet.modules.stack.domain.dto.request.StackReqDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
+import com.example.prozet.modules.stack.domain.dto.response.StackUnmappedResDTO;
 import com.example.prozet.modules.stack.service.StackService;
 import com.example.prozet.security.auth.PrincipalDetails;
 
@@ -58,7 +59,7 @@ public class StackApiController {
                 username);
 
         if (owner || memberAccessEdit) {
-            StackResDTO stackResDTO = stackService.saveStack(stackReqDTO, iconImg);
+            StackUnmappedResDTO stackResDTO = stackService.saveStack(stackReqDTO, iconImg);
 
             if (stackReqDTO == null) {
                 return ErrorResponse.toResponseEntity(ErrorCode.SAVE_STACK_FAIL);

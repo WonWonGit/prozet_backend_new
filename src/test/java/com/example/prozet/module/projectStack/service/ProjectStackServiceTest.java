@@ -19,6 +19,7 @@ import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackResDTO;
+import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackUnmappedResDTO;
 import com.example.prozet.modules.projectStack.domain.entity.ProjectStackEntity;
 import com.example.prozet.modules.projectStack.repository.ProjectStackRepository;
 import com.example.prozet.modules.projectStack.service.ProjectStackService;
@@ -46,18 +47,15 @@ public class ProjectStackServiceTest {
         StackEntity stackEntity = getStackEntity();
         ProjectStackEntity projectStackEntity = getProjectStackEntity();
 
-        when(stackRepository.findByIdx(anyLong())).thenReturn(Optional.of(stackEntity));
+        when(stackRepository.findByIdx(any())).thenReturn(Optional.of(stackEntity));
         when(projectStackRepository.save(any())).thenReturn(projectStackEntity);
 
-        List<Long> stackIdxList = new ArrayList<>();
-        stackIdxList.add(1L);
-        stackIdxList.add(2L);
-
-        List<ProjectStackResDTO> projectStackResDTO = projectStackService.saveProjectStack(stackIdxList,
+        ProjectStackUnmappedResDTO projectStackResDTO = projectStackService.saveProjectStack(
+                1L,
                 getProjectEntity().toProjectResDTO());
 
-        assertThat(projectStackResDTO.get(0).getCheckedYn()).isEqualTo("Y");
-        assertThat(projectStackResDTO.get(0).getStackResDTO().getName()).isEqualTo("spring");
+        assertThat(projectStackResDTO.getCheckedYn()).isEqualTo("Y");
+        assertThat(projectStackResDTO.getStackUnmappedResDTO().getName()).isEqualTo("spring");
 
     }
 
