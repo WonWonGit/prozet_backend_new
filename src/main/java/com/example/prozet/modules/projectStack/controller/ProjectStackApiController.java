@@ -1,5 +1,7 @@
 package com.example.prozet.modules.projectStack.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,10 @@ import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.service.ProjectService;
 import com.example.prozet.modules.project.utils.ProjectUtil;
 import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackResDTO;
+import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackUnmappedResDTO;
 import com.example.prozet.modules.projectStack.service.ProjectStackService;
+import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
+import com.example.prozet.modules.stack.service.StackService;
 import com.example.prozet.security.auth.PrincipalDetails;
 
 @RestController
@@ -29,6 +34,9 @@ public class ProjectStackApiController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private StackService stackService;
 
     @Autowired
     private ProjectStackService projectStackService;
@@ -42,6 +50,8 @@ public class ProjectStackApiController {
         String username = principalDetails.getUsername();
         ProjectResDTO projectResDTO = projectService.findByProjectKey(projectKey);
 
+        List<ProjectStackUnmappedResDTO> projectStackResDTOList = new ArrayList<>();
+
         if (projectResDTO == null) {
             return ErrorResponse.toResponseEntity(ErrorCode.PROJECT_NOT_EXIST);
         }
@@ -52,15 +62,21 @@ public class ProjectStackApiController {
 
         if (membeAccessEdit || projectOwner) {
 
-            List<ProjectStackResDTO> projectStackResDTO = projectStackService.saveProjectStack(stackIdxList,
-                    projectResDTO);
+            stackIdxList.forEach(stackIdx -> {
 
-            if (projectStackResDTO.isEmpty()) {
+                ProjectStackUnmappedResDTO projectStackResDTO = projectStackService.saveProjectStack(stackIdx,
+                        projectResDTO);
+                projectStackResDTOList.add(projectStackResDTO);
+
+            });
+
+            if (projectStackResDTOList.isEmpty()) {
 
                 return ErrorResponse.toResponseEntity(ErrorCode.SAVE_PROJECT_STACK_FAIL);
 
             } else {
-                return ResponseDTO.toResponseEntity(ResponseEnum.SAVE_PROJECT_STACK_SUCCESS, projectStackResDTO);
+
+                return ResponseDTO.toResponseEntity(ResponseEnum.SAVE_PROJECT_STACK_SUCCESS, projectStackResDTOList);
 
             }
 
@@ -79,6 +95,8 @@ public class ProjectStackApiController {
         String username = principalDetails.getUsername();
         ProjectResDTO projectResDTO = projectService.findByProjectKey(projectKey);
 
+        List<ProjectStackUnmappedResDTO> projectStackResDTOList = new ArrayList<>();
+
         if (projectResDTO == null) {
             return ErrorResponse.toResponseEntity(ErrorCode.PROJECT_NOT_EXIST);
         }
@@ -89,15 +107,31 @@ public class ProjectStackApiController {
 
         if (membeAccessEdit || projectOwner) {
 
-            List<ProjectStackResDTO> projectStackResDTO = projectStackService.editProjectStack(stackIdxList,
-                    projectResDTO);
+            stackIdxList.forEach(stackIdx -> {
+                ProjectStackResDTO projectStackResDTO = projectStackService.findProjectStack(stackIdx, projectKey);
 
-            if (projectStackResDTO.isEmpty()) {
+                if (projectStackResDTO != null) {
+                    ProjectStackUnmappedResDTO projectStackUnmappedResDTO = projectStackService
+                            .editProjectStack(projectStackResDTO.getIdx());
+                    projectStackResDTOList.add(projectStackUnmappedResDTO);
+
+                } else {
+
+                    ProjectStackUnmappedResDTO projectStackUnmappedResDTO = projectStackService.saveProjectStack(
+                            stackIdx,
+                            projectResDTO);
+                    projectStackResDTOList.add(projectStackUnmappedResDTO);
+
+                }
+
+            });
+
+            if (projectStackResDTOList.isEmpty()) {
 
                 return ErrorResponse.toResponseEntity(ErrorCode.UPDATE_PROJECT_STACK_FAIL);
 
             } else {
-                return ResponseDTO.toResponseEntity(ResponseEnum.UPDATE_PROJECT_STACK_SUCCESS, projectStackResDTO);
+                return ResponseDTO.toResponseEntity(ResponseEnum.UPDATE_PROJECT_STACK_SUCCESS, projectStackResDTOList);
 
             }
 

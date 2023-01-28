@@ -8,10 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.prozet.common.CustomException;
+import com.example.prozet.common.ErrorCode;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackResDTO;
+import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackUnmappedResDTO;
 import com.example.prozet.modules.projectStack.domain.entity.ProjectStackEntity;
 import com.example.prozet.modules.projectStack.repository.ProjectStackRepository;
+import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
 import com.example.prozet.modules.stack.repository.StackRepository;
 
@@ -26,46 +30,43 @@ public class ProjectStackService {
     private StackRepository stackRepository;
 
     @Transactional
-    public List<ProjectStackResDTO> saveProjectStack(List<Long> stackIdxList, ProjectResDTO projectResDTO) {
+    public ProjectStackUnmappedResDTO saveProjectStack(Long stackIdx, ProjectResDTO projectResDTO) {
 
-        List<ProjectStackResDTO> projectStackResDTOList = new ArrayList<ProjectStackResDTO>();
+        StackEntity stackEntity = stackRepository.findByIdx(stackIdx).orElseThrow();
 
-        stackIdxList.forEach(stackIdx -> {
-            Optional<StackEntity> stackEntity = stackRepository.findByIdx(stackIdx);
-            if (stackEntity.isPresent()) {
-                ProjectStackEntity projectStackEntity = ProjectStackEntity.builder()
-                        .projectEntity(projectResDTO.toEntity())
-                        .stackEntity(stackEntity.get()).checkedYn("Y").build();
-                ProjectStackEntity projectStackEntityPS = projectStackRepository.save(projectStackEntity);
-                projectStackResDTOList.add(projectStackEntityPS.toProjectStackResDTO());
-            }
-        });
+        ProjectStackEntity projectStackEntity = ProjectStackEntity.builder()
+                .projectEntity(projectResDTO.toEntity())
+                .stackEntity(stackEntity)
+                .checkedYn("Y").build();
 
-        return projectStackResDTOList;
+        ProjectStackEntity projectStackEntityPS = projectStackRepository.save(projectStackEntity);
+
+        return projectStackEntityPS.toProjectStackUnmmapedResDTO();
 
     }
 
     @Transactional
-    public List<ProjectStackResDTO> editProjectStack(List<Long> stackIdxList, ProjectResDTO projectResDTO) {
+    public ProjectStackUnmappedResDTO editProjectStack(Long projctStackIdx) {
 
-        List<ProjectStackResDTO> projectStackResDTOList = new ArrayList<ProjectStackResDTO>();
+        ProjectStackEntity projectStackEntity = projectStackRepository.findByIdx(projctStackIdx)
+                .orElseThrow();
 
-        stackIdxList.forEach(stackIdx -> {
-            Optional<ProjectStackEntity> projectStack = projectStackRepository.findByStackEntity_Idx(stackIdx);
-            if (projectStack.isPresent()) {
-                projectStack.get().editCheckedYn(projectStack.get().getCheckedYn());
-                projectStackResDTOList.add(projectStack.get().toProjectStackResDTO());
-            } else {
-                Optional<StackEntity> stackEntity = stackRepository.findByIdx(stackIdx);
-                ProjectStackEntity projectStackEntity = ProjectStackEntity.builder()
-                        .projectEntity(projectResDTO.toEntity())
-                        .stackEntity(stackEntity.get()).checkedYn("Y").build();
-                ProjectStackEntity projectStackEntityPS = projectStackRepository.save(projectStackEntity);
-                projectStackResDTOList.add(projectStackEntityPS.toProjectStackResDTO());
-            }
-        });
+        projectStackEntity.editCheckedYn(projectStackEntity.getCheckedYn());
 
-        return projectStackResDTOList;
+        return projectStackEntity.toProjectStackUnmmapedResDTO();
+
+    }
+
+    public ProjectStackResDTO findProjectStack(Long stackIdx, String projectKey) {
+
+        Optional<ProjectStackEntity> projectStackEntity = projectStackRepository
+                .findByStackEntity_IdxAndProjectEntity_ProjectKey(stackIdx, projectKey);
+
+        if (projectStackEntity.isPresent()) {
+            return projectStackEntity.get().toProjectStackResDTO();
+        } else {
+            return null;
+        }
 
     }
 
