@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackResDTO;
+import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackUnmappedResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
 
 import lombok.AllArgsConstructor;
@@ -44,6 +45,15 @@ public class ProjectStackEntity {
         return ProjectStackResDTO.builder()
                 .idx(idx)
                 .stackResDTO(stackEntity.toStackResDTO())
+                .checkedYn(checkedYn)
+                .build();
+
+    }
+
+    public ProjectStackUnmappedResDTO toProjectStackUnmmapedResDTO() {
+        return ProjectStackUnmappedResDTO.builder()
+                .idx(idx)
+                .stackUnmappedResDTO(stackEntity.toStackUnmappedResDTO())
                 .checkedYn(checkedYn)
                 .build();
 

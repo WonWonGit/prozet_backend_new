@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
+import com.example.prozet.modules.stack.domain.dto.response.StackUnmappedResDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,6 +53,18 @@ public class StackEntity {
                 .icon(icon)
                 .stackType(stackType)
                 .stackCategory(stackCategory.toStackCategoryResDTO())
+                .build();
+
+    }
+
+    public StackUnmappedResDTO toStackUnmappedResDTO() {
+        return StackUnmappedResDTO.builder()
+                .idx(idx)
+                .name(name)
+                .icon(icon)
+                .stackType(stackType)
+                .stackCategory(stackCategory.getCategory())
+                .projectKey(projectEntity != null ? projectEntity.getProjectKey() : null)
                 .build();
 
     }
