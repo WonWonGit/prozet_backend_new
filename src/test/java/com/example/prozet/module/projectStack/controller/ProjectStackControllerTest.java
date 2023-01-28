@@ -7,6 +7,7 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,6 +23,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
@@ -31,6 +33,7 @@ import com.example.prozet.modules.projectStack.domain.entity.ProjectStackEntity;
 import com.example.prozet.modules.projectStack.service.ProjectStackService;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
+import com.example.prozet.modules.stack.service.StackService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -47,6 +50,9 @@ public class ProjectStackControllerTest {
 
     @MockBean
     private ProjectStackService projectStackService;
+
+    @MockBean
+    private StackService stackService;
 
     @Value("${jwt.access_header_string}")
     private String accessHeader;
@@ -75,8 +81,9 @@ public class ProjectStackControllerTest {
     @WithMockUser(username = "google_123123", value = "user")
     public void saveProjectStackTest() throws JsonProcessingException, Exception {
 
+        when(stackService.findByIdx(anyLong())).thenReturn(getStackEntity().toStackResDTO());
         when(projectService.findByProjectKey(any())).thenReturn(getProjectEntity().toProjectResDTO());
-        when(projectStackService.saveProjectStack(anyList(), any())).thenReturn(List.of(getProjectStackEntity().toProjectStackResDTO()));
+        when(projectStackService.saveProjectStack(any(), any())).thenReturn(getProjectStackEntity().toProjectStackUnmmapedResDTO());
 
         List<Long> stackIdxList = new ArrayList<>();
         stackIdxList.add(1l);
@@ -86,7 +93,8 @@ public class ProjectStackControllerTest {
             .header(accessHeader, BEARER + accessToken())
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(stackIdxList)))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andDo(MockMvcResultHandlers.print());
 
     }
 
@@ -113,6 +121,7 @@ public class ProjectStackControllerTest {
 
         StackEntity stackEntity = StackEntity.builder().name("spring")
                 .stackCategory(stackCategoryEntity)
+                .icon("stackIcon")
                 .stackType(StackType.DEFAULTSTACK).build();
 
         return stackEntity;

@@ -30,6 +30,7 @@ import com.example.prozet.modules.project.service.ProjectService;
 import com.example.prozet.modules.stack.domain.dto.request.StackReqDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackCategoryResDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
+import com.example.prozet.modules.stack.domain.dto.response.StackUnmappedResDTO;
 import com.example.prozet.modules.stack.service.StackService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,11 +82,12 @@ public class StackApiControllerTest {
                 .projectResDTO(null)
                 .stackType(StackType.DEFAULTSTACK).build();
 
-        StackResDTO stackResDTO = StackResDTO.builder()
+        StackUnmappedResDTO stackUnmappedResDTO = StackUnmappedResDTO.builder()
                 .icon("iconUrl")
                 .name("stack")
-                .stackCategory(stackCategoryResDTO)
+                .stackCategory(stackCategoryResDTO.getCategory())
                 .stackType(StackType.CUSTOMSTACK)
+                .projectKey("projectKey")
                 .build();
 
         MemberResDTO memberResDTO = MemberResDTO.builder().username("google_123123").build();
@@ -98,7 +100,7 @@ public class StackApiControllerTest {
         StackReqDTO stackReqDTO = StackReqDTO.builder().iconUrl("iconUrl").StackCategoryIdx(1).name("stack").build();
 
         when(projectService.findByProjectKey(anyString())).thenReturn(projectResDTO);
-        when(stackService.saveStack(any(), any())).thenReturn(stackResDTO);
+        when(stackService.saveStack(any(), any())).thenReturn(stackUnmappedResDTO);
 
         MockMultipartFile stackRequest = new MockMultipartFile("stackReqDTO", "", MediaType.APPLICATION_JSON_VALUE,
                 objectMapper.writeValueAsString(stackReqDTO).getBytes());
