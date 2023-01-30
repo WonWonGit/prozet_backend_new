@@ -8,10 +8,13 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,10 +30,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
+import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.service.ProjectService;
 import com.example.prozet.modules.projectStack.domain.entity.ProjectStackEntity;
 import com.example.prozet.modules.projectStack.service.ProjectStackService;
+import com.example.prozet.modules.stack.domain.dto.response.StackUnmappedResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
 import com.example.prozet.modules.stack.service.StackService;
@@ -42,40 +47,40 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ActiveProfiles("test")
 public class ProjectStackControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+        @Autowired
+        MockMvc mockMvc;
 
-    @MockBean
-    private ProjectService projectService;
+        @MockBean
+        private ProjectService projectService;
 
-    @MockBean
-    private ProjectStackService projectStackService;
+        @MockBean
+        private ProjectStackService projectStackService;
 
-    @MockBean
-    private StackService stackService;
+        @MockBean
+        private StackService stackService;
 
-    @Value("${jwt.access_header_string}")
-    private String accessHeader;
+        @Value("${jwt.access_header_string}")
+        private String accessHeader;
 
-    private static String BEARER = "Bearer ";
+        private static String BEARER = "Bearer ";
 
-    ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
 
-    public String accessToken() throws JsonProcessingException, Exception {
+        public String accessToken() throws JsonProcessingException, Exception {
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("email", "test@google.com");
-        map.put("sub", "123123");
+                Map<String, Object> map = new HashMap<>();
+                map.put("email", "test@google.com");
+                map.put("sub", "123123");
 
-        MvcResult result = mockMvc.perform(post("/login/google")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(map)))
-                .andExpect(status().isOk()).andReturn();
+                MvcResult result = mockMvc.perform(post("/login/google")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(map)))
+                                .andExpect(status().isOk()).andReturn();
 
-        String access = result.getResponse().getHeader(accessHeader);
+                String access = result.getResponse().getHeader(accessHeader);
 
-        return access;
-    }
+                return access;
+        }
 
     @Test
     @WithMockUser(username = "google_123123", value = "user")
@@ -98,43 +103,78 @@ public class ProjectStackControllerTest {
 
     }
 
-    public ProjectEntity getProjectEntity() {
+        @Test
+        @WithMockUser(username = "google_123123", value = "user")
+        public void editProjectStackTest() throws Exception {
 
-        MemberEntity memberEntity = MemberEntity.builder()
-                .username("google_123123")
-                .name("name")
-                .email("email")
-                .build();
+                ProjectResDTO projectResDTO = getProjectEntity().toProjectResDTO();
 
-        ProjectEntity projectEntity = ProjectEntity.builder()
-                .projectKey("projectKey")
-                .projectInformation(null)
-                .owner(memberEntity)
-                .build();
+                JSONArray stackIdxList = new JSONArray();
+                stackIdxList.put(1L);
+                stackIdxList.put(2L);
 
-        return projectEntity;
-    }
+                when(projectService.findByProjectKey(anyString())).thenReturn(projectResDTO);
+                when(projectStackService.findProjectStack(anyLong(), any()))
+                                .thenReturn(getProjectStackEntity().toProjectStackResDTO());
 
-    public StackEntity getStackEntity() {
-        StackCategoryEntity stackCategoryEntity = StackCategoryEntity.builder().category("back end")
-                .stackType(StackType.DEFAULTSTACK).build();
+                ProjectStackEntity projectStackEntity = getProjectStackEntity();
+                projectStackEntity.editCheckedYn(projectStackEntity.getCheckedYn());
 
-        StackEntity stackEntity = StackEntity.builder().name("spring")
-                .stackCategory(stackCategoryEntity)
-                .icon("stackIcon")
-                .stackType(StackType.DEFAULTSTACK).build();
+                when(projectStackService.editProjectStack(any()))
+                                .thenReturn(projectStackEntity.toProjectStackUnmmapedResDTO());
 
-        return stackEntity;
-    }
+                mockMvc.perform(put("/v1/api/project/stack/projectKey")
+                                .header(accessHeader, BEARER + accessToken())
+                                .content(stackIdxList.toString())
+                                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                                .andExpect(status().isOk())
+                                .andDo(MockMvcResultHandlers.print());
 
-    public ProjectStackEntity getProjectStackEntity() {
-        ProjectStackEntity projectStackEntity = ProjectStackEntity.builder()
-                .projectEntity(getProjectEntity())
-                .stackEntity(getStackEntity())
-                .checkedYn("Y")
-                .build();
+        }
 
-        return projectStackEntity;
-    }
+        // ********** Create Model ***********/
+
+        public ProjectEntity getProjectEntity() {
+
+                MemberEntity memberEntity = MemberEntity.builder().username("google_123123").build();
+
+                ProjectEntity projectEntity = ProjectEntity.builder()
+                                .projectKey("projectKey")
+                                .owner(memberEntity)
+                                .build();
+
+                return projectEntity;
+
+        }
+
+        public StackEntity getStackEntity() {
+
+                StackCategoryEntity stackCategoryEntity = StackCategoryEntity.builder()
+                                .idx(1)
+                                .category("backend")
+                                .projectEntity(null)
+                                .stackType(StackType.DEFAULTSTACK).build();
+
+                StackEntity stackEntity = StackEntity.builder()
+                                .icon("iconUrl")
+                                .name("stack")
+                                .stackCategory(stackCategoryEntity)
+                                .stackType(StackType.CUSTOMSTACK)
+                                .projectEntity(getProjectEntity())
+                                .build();
+
+                return stackEntity;
+
+        }
+
+        public ProjectStackEntity getProjectStackEntity() {
+                ProjectStackEntity projectStackEntity = ProjectStackEntity.builder()
+                                .stackEntity(getStackEntity())
+                                .checkedYn("Y")
+                                .projectEntity(getProjectEntity())
+                                .build();
+
+                return projectStackEntity;
+        }
 
 }

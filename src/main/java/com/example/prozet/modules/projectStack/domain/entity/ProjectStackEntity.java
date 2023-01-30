@@ -45,6 +45,7 @@ public class ProjectStackEntity {
         return ProjectStackResDTO.builder()
                 .idx(idx)
                 .stackResDTO(stackEntity.toStackResDTO())
+                .projctResDTO(projectEntity.toProjectResDTO())
                 .checkedYn(checkedYn)
                 .build();
 

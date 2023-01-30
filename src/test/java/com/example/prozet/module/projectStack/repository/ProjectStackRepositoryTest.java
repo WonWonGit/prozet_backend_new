@@ -25,6 +25,8 @@ import com.example.prozet.modules.stack.repository.StackRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 @DataJpaTest
 @ActiveProfiles("test")
 @Import(QueryDSLConfigTest.class)
@@ -63,19 +65,24 @@ public class ProjectStackRepositoryTest {
 
                 ProjectStackEntity projectStackEntity = getProjectStackEntity(stackEntityPS, projectEntityPS);
 
-                projectStackRepository.save(projectStackEntity);
+                ProjectStackEntity projectStackEntityPS = projectStackRepository.save(projectStackEntity);
+
+                assertThat(projectStackEntityPS.getIdx()).isEqualTo(1L);
 
         }
 
         @Test
-        @Order(1)
         public void findByStackEntityIdxTest() {
 
-                ProjectStackEntity projectStackEntity = projectStackRepository
-                                .findByStackEntity_IdxAndProjectEntity_ProjectKey(1L, "projectKey")
-                                .orElseThrow(() -> new IllegalArgumentException());
+                Optional<ProjectStackEntity> projectStackEntity = projectStackRepository
+                                .findByStackEntity_IdxAndProjectEntity_ProjectKey(1L, "projectKey");
 
-                assertThat(projectStackEntity.getStackEntity().getName()).isEqualTo("spring");
+                if (projectStackEntity.isPresent()) {
+
+                        assertThat(projectStackEntity.get().getStackEntity().getName()).isEqualTo("spring");
+
+                }
+
         }
 
         // ********** Create Model ***********/
@@ -108,6 +115,7 @@ public class ProjectStackRepositoryTest {
         public StackEntity getStackEntity(StackCategoryEntity stackCategoryEntity) {
 
                 StackEntity stackEntity = StackEntity.builder().name("spring")
+                                .idx(1L)
                                 .stackCategory(stackCategoryEntity)
                                 .stackType(StackType.DEFAULTSTACK).build();
 

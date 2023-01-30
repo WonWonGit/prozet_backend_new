@@ -32,70 +32,97 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(MockitoExtension.class)
 public class ProjectStackServiceTest {
 
-    @InjectMocks
-    private ProjectStackService projectStackService;
+        @InjectMocks
+        private ProjectStackService projectStackService;
 
-    @Mock
-    private ProjectStackRepository projectStackRepository;
+        @Mock
+        private ProjectStackRepository projectStackRepository;
 
-    @Mock
-    private StackRepository stackRepository;
+        @Mock
+        private StackRepository stackRepository;
 
-    @Test
-    public void saveProjectStackTest() {
+        @Test
+        public void saveProjectStackTest() {
 
-        StackEntity stackEntity = getStackEntity();
-        ProjectStackEntity projectStackEntity = getProjectStackEntity();
+                StackEntity stackEntity = getStackEntity();
+                ProjectStackEntity projectStackEntity = getProjectStackEntity();
 
-        when(stackRepository.findByIdx(any())).thenReturn(Optional.of(stackEntity));
-        when(projectStackRepository.save(any())).thenReturn(projectStackEntity);
+                when(stackRepository.findByIdx(any())).thenReturn(Optional.of(stackEntity));
+                when(projectStackRepository.save(any())).thenReturn(projectStackEntity);
 
-        ProjectStackUnmappedResDTO projectStackResDTO = projectStackService.saveProjectStack(
-                1L,
-                getProjectEntity().toProjectResDTO());
+                ProjectStackUnmappedResDTO projectStackResDTO = projectStackService.saveProjectStack(
+                                1L,
+                                getProjectEntity().toProjectResDTO());
 
-        assertThat(projectStackResDTO.getCheckedYn()).isEqualTo("Y");
-        assertThat(projectStackResDTO.getStackUnmappedResDTO().getName()).isEqualTo("spring");
+                assertThat(projectStackResDTO.getCheckedYn()).isEqualTo("Y");
+                assertThat(projectStackResDTO.getStackUnmappedResDTO().getName()).isEqualTo("spring");
 
-    }
+        }
 
-    // ********** Create Model ***********/
-    public ProjectEntity getProjectEntity() {
+        @Test
+        public void editProjectStackTest() {
 
-        MemberEntity memberEntity = MemberEntity.builder()
-                .username("username")
-                .name("name")
-                .email("email")
-                .build();
+                ProjectStackEntity projectStackEntity = getProjectStackEntity();
 
-        ProjectEntity projectEntity = ProjectEntity.builder()
-                .projectKey("projectKey")
-                .projectInformation(null)
-                .owner(memberEntity)
-                .build();
+                when(projectStackRepository.findByIdx(anyLong())).thenReturn(Optional.of(projectStackEntity));
 
-        return projectEntity;
-    }
+                ProjectStackUnmappedResDTO projectStackUnmappedResDTO = projectStackService.editProjectStack(1L);
 
-    public StackEntity getStackEntity() {
-        StackCategoryEntity stackCategoryEntity = StackCategoryEntity.builder().category("back end")
-                .stackType(StackType.DEFAULTSTACK).build();
+                assertThat(projectStackUnmappedResDTO.getCheckedYn()).isEqualTo("N");
 
-        StackEntity stackEntity = StackEntity.builder().name("spring")
-                .stackCategory(stackCategoryEntity)
-                .stackType(StackType.DEFAULTSTACK).build();
+        }
 
-        return stackEntity;
-    }
+        @Test
+        public void findProjectStackTest() {
 
-    public ProjectStackEntity getProjectStackEntity() {
-        ProjectStackEntity projectStackEntity = ProjectStackEntity.builder()
-                .projectEntity(getProjectEntity())
-                .stackEntity(getStackEntity())
-                .checkedYn("Y")
-                .build();
+                ProjectStackEntity projectStackEntity = getProjectStackEntity();
 
-        return projectStackEntity;
-    }
+                when(projectStackRepository.findByStackEntity_IdxAndProjectEntity_ProjectKey(any(), any()))
+                                .thenReturn(Optional.of(projectStackEntity));
+
+                ProjectStackResDTO projectStackResDTO = projectStackService.findProjectStack(1L, "projectKey");
+
+                assertThat(projectStackResDTO.getProjctResDTO().getProjectKey()).isEqualTo("projectKey");
+
+        }
+
+        // ********** Create Model ***********/
+        public ProjectEntity getProjectEntity() {
+
+                MemberEntity memberEntity = MemberEntity.builder()
+                                .username("username")
+                                .name("name")
+                                .email("email")
+                                .build();
+
+                ProjectEntity projectEntity = ProjectEntity.builder()
+                                .projectKey("projectKey")
+                                .projectInformation(null)
+                                .owner(memberEntity)
+                                .build();
+
+                return projectEntity;
+        }
+
+        public StackEntity getStackEntity() {
+                StackCategoryEntity stackCategoryEntity = StackCategoryEntity.builder().category("back end")
+                                .stackType(StackType.DEFAULTSTACK).build();
+
+                StackEntity stackEntity = StackEntity.builder().name("spring")
+                                .stackCategory(stackCategoryEntity)
+                                .stackType(StackType.DEFAULTSTACK).build();
+
+                return stackEntity;
+        }
+
+        public ProjectStackEntity getProjectStackEntity() {
+                ProjectStackEntity projectStackEntity = ProjectStackEntity.builder()
+                                .projectEntity(getProjectEntity())
+                                .stackEntity(getStackEntity())
+                                .checkedYn("Y")
+                                .build();
+
+                return projectStackEntity;
+        }
 
 }
