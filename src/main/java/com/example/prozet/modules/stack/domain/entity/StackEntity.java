@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
+import com.example.prozet.modules.stack.domain.dto.response.StackFindResDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackUnmappedResDTO;
 
@@ -43,7 +44,7 @@ public class StackEntity {
     private ProjectEntity projectEntity;
 
     @ManyToOne
-    @JoinColumn(name = "stack_category_idx", referencedColumnName = "idx")
+    @JoinColumn(name = "stack_category_idx")
     private StackCategoryEntity stackCategory;
 
     public StackResDTO toStackResDTO() {
@@ -67,6 +68,14 @@ public class StackEntity {
                 .projectKey(projectEntity != null ? projectEntity.getProjectKey() : null)
                 .build();
 
+    }
+
+    public StackFindResDTO toStackFindResDTO() {
+        return StackFindResDTO.builder()
+                .idx(idx)
+                .name(name)
+                .icon(icon)
+                .build();
     }
 
 }

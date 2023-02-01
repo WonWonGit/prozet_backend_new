@@ -23,6 +23,7 @@ public class StackRepositoryImpl implements StackRepositoryCustom {
                 stackEntity.idx,
                 stackEntity.name,
                 stackEntity.icon,
+                stackEntity.stackCategory.idx,
                 stackEntity.stackCategory.category)).from(stackEntity)
                 .where(stackEntity.stackType.eq(StackType.DEFAULTSTACK),
                         stackEntity.projectEntity.projectKey.eq(projectKey))

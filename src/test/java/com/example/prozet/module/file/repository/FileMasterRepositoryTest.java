@@ -39,6 +39,7 @@ public class FileMasterRepositoryTest {
 
         FileMasterEntity fileMasterEntity = fileMasterRepository.findByIdx(1)
                 .orElseThrow(() -> new CustomException(ErrorCode.FILE_MASTER_NOT_EXIST));
+
         assertThat(fileMasterEntity.getCategory()).isEqualTo(FileType.MEMBER_PROFILE.fileType());
 
     }

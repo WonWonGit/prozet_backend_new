@@ -9,11 +9,18 @@ import com.example.prozet.common.CustomException;
 import com.example.prozet.common.ErrorCode;
 import com.example.prozet.config.QueryDSLConfigTest;
 import com.example.prozet.enum_pakage.StackType;
+import com.example.prozet.modules.project.domain.entity.ProjectEntity;
+import com.example.prozet.modules.project.repository.ProjectRepository;
+import com.example.prozet.modules.stack.domain.dto.response.StackCategoryResDTO;
+import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
+import com.example.prozet.modules.stack.domain.entity.StackEntity;
 import com.example.prozet.modules.stack.repository.StackCategoryRepository;
+import com.example.prozet.modules.stack.repository.StackRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -27,16 +34,39 @@ public class StackCategoryRepositoryTest {
     @Autowired
     private StackCategoryRepository stackCategoryRepository;
 
+    @Autowired
+    private StackRepository stackRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+
     @BeforeEach
     public void stackCategorySave() {
+
+        ProjectEntity projectEntity = ProjectEntity.builder()
+                .projectKey("projectKey")
+                .build();
+
+        ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
 
         StackCategoryEntity stackCategoryEntity = StackCategoryEntity.builder()
                 .category("BACK END")
                 .stackType(StackType.CUSTOMSTACK)
-                .projectEntity(null)
+                .projectEntity(projectEntityPS)
                 .build();
 
-        stackCategoryRepository.save(stackCategoryEntity);
+        StackCategoryEntity stackCategoryEntityPS = stackCategoryRepository.save(stackCategoryEntity);
+
+        StackEntity stackEntity = StackEntity.builder()
+                .name("spring")
+                .projectEntity(null)
+                .stackCategory(stackCategoryEntityPS)
+                .stackType(StackType.DEFAULTSTACK)
+                .build();
+
+        stackRepository.save(stackEntity);
+
+        System.out.println(stackCategoryRepository.findAll() + "$$$$");
 
     }
 
@@ -50,6 +80,15 @@ public class StackCategoryRepositoryTest {
             assertThat(stackCategoryEntity).isEmpty();
         }
 
+    }
+
+    @Test
+    public void getStackCategory() {
+
+        List<StackCategoryResDTO> categoryList = stackCategoryRepository
+                .getStackCategory("projectKey");
+
+        assertThat(categoryList.get(0).getCategory()).isEqualTo("BACK END");
     }
 
 }

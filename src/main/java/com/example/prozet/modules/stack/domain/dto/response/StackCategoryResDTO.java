@@ -29,16 +29,12 @@ public class StackCategoryResDTO {
     private String category;
     private StackType stackType;
     private ProjectResDTO projectResDTO;
-    private List<StackResDTO> stacks;
 
     public StackCategoryEntity toEntity() {
         return StackCategoryEntity.builder()
                 .idx(idx)
                 .category(category)
                 .projectEntity(projectResDTO != null ? projectResDTO.toEntity() : null)
-                .stacks(stacks != null ? stacks.stream()
-                        .map(StackResDTO::toEntity)
-                        .collect(Collectors.toList()) : null)
                 .stackType(stackType)
                 .build();
     }

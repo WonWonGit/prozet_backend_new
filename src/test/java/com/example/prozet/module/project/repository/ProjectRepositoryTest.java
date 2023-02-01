@@ -1,5 +1,10 @@
 package com.example.prozet.module.project.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -11,15 +16,7 @@ import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.project.domain.dto.response.ProjectListDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static com.example.prozet.modules.project.domain.entity.QProjectEntity.projectEntity;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
 
 @DataJpaTest
 @Import(QueryDSLConfigTest.class)
