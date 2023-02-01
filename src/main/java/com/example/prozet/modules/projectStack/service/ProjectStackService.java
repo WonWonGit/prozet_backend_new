@@ -1,7 +1,5 @@
 package com.example.prozet.modules.projectStack.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackR
 import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackUnmappedResDTO;
 import com.example.prozet.modules.projectStack.domain.entity.ProjectStackEntity;
 import com.example.prozet.modules.projectStack.repository.ProjectStackRepository;
-import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
 import com.example.prozet.modules.stack.repository.StackRepository;
 
@@ -32,7 +29,8 @@ public class ProjectStackService {
     @Transactional
     public ProjectStackUnmappedResDTO saveProjectStack(Long stackIdx, ProjectResDTO projectResDTO) {
 
-        StackEntity stackEntity = stackRepository.findByIdx(stackIdx).orElseThrow();
+        StackEntity stackEntity = stackRepository.findByIdx(stackIdx)
+                .orElseThrow(() -> new CustomException(ErrorCode.STACK_NOT_EXIST));
 
         ProjectStackEntity projectStackEntity = ProjectStackEntity.builder()
                 .projectEntity(projectResDTO.toEntity())
@@ -49,7 +47,7 @@ public class ProjectStackService {
     public ProjectStackUnmappedResDTO editProjectStack(Long projctStackIdx) {
 
         ProjectStackEntity projectStackEntity = projectStackRepository.findByIdx(projctStackIdx)
-                .orElseThrow();
+                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_STACK_NOT_EXIST));
 
         projectStackEntity.editCheckedYn(projectStackEntity.getCheckedYn());
 

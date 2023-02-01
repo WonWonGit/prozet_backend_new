@@ -1,5 +1,6 @@
 package com.example.prozet.modules.stack.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import com.example.prozet.modules.file.domain.dto.response.FileMasterDTO;
 import com.example.prozet.modules.file.service.FileService;
 import com.example.prozet.modules.project.repository.ProjectRepository;
 import com.example.prozet.modules.stack.domain.dto.request.StackReqDTO;
+import com.example.prozet.modules.stack.domain.dto.response.StackFindResDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackUnmappedResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
@@ -90,6 +92,13 @@ public class StackService {
         }
 
         return null;
+    }
+
+    public List<StackFindResDTO> getStackList(String projectKey) {
+
+        List<StackFindResDTO> stackList = stackRepository.getStackList(projectKey);
+
+        return stackList;
     }
 
 }
