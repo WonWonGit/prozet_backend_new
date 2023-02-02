@@ -1,7 +1,9 @@
 package com.example.prozet.modules.stack.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,9 +32,6 @@ public class StackService {
 
     @Autowired
     private StackRepository stackRepository;
-
-    @Autowired
-    private ProjectRepository projectRepository;
 
     @Autowired
     private StackCategoryRepository stackCategoryRepository;
@@ -94,11 +93,18 @@ public class StackService {
         return null;
     }
 
-    public List<StackFindResDTO> getStackList(String projectKey) {
+    public Map<String, List<StackFindResDTO>> getStackList(String projectKey) {
 
         List<StackFindResDTO> stackList = stackRepository.getStackList(projectKey);
 
-        return stackList;
+        if (stackList.isEmpty()) {
+            return null;
+        }
+
+        Map<String, List<StackFindResDTO>> stackGroup = stackList.stream().collect(
+                Collectors.groupingBy(StackFindResDTO::getCategory));
+
+        return stackGroup;
     }
 
 }

@@ -1,13 +1,18 @@
 package com.example.prozet.modules.stack.repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.stack.domain.dto.response.StackFindResDTO;
+import com.example.prozet.modules.stack.domain.entity.StackEntity;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import static com.example.prozet.modules.stack.domain.entity.QStackEntity.stackEntity;
+
+import static com.example.prozet.modules.project.domain.entity.QProjectEntity.projectEntity;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,17 +24,27 @@ public class StackRepositoryImpl implements StackRepositoryCustom {
     @Override
     public List<StackFindResDTO> getStackList(String projectKey) {
 
-        List<StackFindResDTO> results = query.select(Projections.constructor(StackFindResDTO.class,
-                stackEntity.idx,
-                stackEntity.name,
-                stackEntity.icon,
-                stackEntity.stackCategory.idx,
-                stackEntity.stackCategory.category)).from(stackEntity)
-                .where(stackEntity.stackType.eq(StackType.DEFAULTSTACK),
-                        stackEntity.projectEntity.projectKey.eq(projectKey))
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if (stackEntity.stackType != null) {
+            builder.or(stackEntity.stackType.eq(StackType.DEFAULTSTACK));
+        }
+
+        if (stackEntity.projectEntity != null) {
+            builder.or(stackEntity.projectEntity.projectKey.eq(projectKey));
+        }
+
+        List<StackEntity> results = query.select(
+                stackEntity).from(stackEntity)
+                .leftJoin(stackEntity.projectEntity, projectEntity).fetchJoin()
+                .where(builder)
                 .fetch();
 
-        return results;
+        List<StackFindResDTO> stackList = results.stream()
+                .map(StackEntity::toStackFindResDTO)
+                .collect(Collectors.toList());
+
+        return stackList;
     }
 
 }
