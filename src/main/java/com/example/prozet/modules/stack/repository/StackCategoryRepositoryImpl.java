@@ -1,19 +1,16 @@
 package com.example.prozet.modules.stack.repository;
 
+import static com.example.prozet.modules.project.domain.entity.QProjectEntity.projectEntity;
+import static com.example.prozet.modules.stack.domain.entity.QStackCategoryEntity.stackCategoryEntity;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.example.prozet.enum_pakage.StackType;
-import com.example.prozet.modules.stack.domain.dto.response.StackCategoryResDTO;
+import com.example.prozet.modules.stack.domain.dto.response.StackCategoryFindResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
-import com.example.prozet.modules.stack.domain.entity.StackEntity;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
-import static com.example.prozet.modules.stack.domain.entity.QStackCategoryEntity.stackCategoryEntity;
-import static com.example.prozet.modules.stack.domain.entity.QStackEntity.stackEntity;
-import static com.example.prozet.modules.project.domain.entity.QProjectEntity.projectEntity;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +20,7 @@ public class StackCategoryRepositoryImpl implements StackCategoryRepositoryCusto
     private final JPAQueryFactory query;
 
     @Override
-    public List<StackCategoryResDTO> getStackCategory(String projectKey) {
+    public List<StackCategoryFindResDTO> getStackCategory(String projectKey) {
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -37,12 +34,12 @@ public class StackCategoryRepositoryImpl implements StackCategoryRepositoryCusto
 
         List<StackCategoryEntity> results = query.select(
                 stackCategoryEntity).from(stackCategoryEntity)
-                .leftJoin(stackCategoryEntity.stacks, stackEntity).fetchJoin()
+                .leftJoin(stackCategoryEntity.projectEntity, projectEntity).fetchJoin()
                 .where(builder)
                 .fetch();
 
-        List<StackCategoryResDTO> categoryList = results.stream()
-                .map(StackCategoryEntity::toStackCategoryResDTO)
+        List<StackCategoryFindResDTO> categoryList = results.stream()
+                .map(StackCategoryEntity::toStackCategoryFindResDTO)
                 .collect(Collectors.toList());
 
         return categoryList;
