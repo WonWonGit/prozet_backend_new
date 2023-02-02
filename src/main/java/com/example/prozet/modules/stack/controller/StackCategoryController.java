@@ -1,7 +1,6 @@
 package com.example.prozet.modules.stack.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,29 +14,25 @@ import com.example.prozet.common.ErrorResponse;
 import com.example.prozet.common.ResponseDTO;
 import com.example.prozet.common.ResponseEnum;
 import com.example.prozet.modules.stack.domain.dto.response.StackCategoryFindResDTO;
-import com.example.prozet.modules.stack.domain.dto.response.StackFindResDTO;
 import com.example.prozet.modules.stack.service.StackCategoryService;
-import com.example.prozet.modules.stack.service.StackService;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @Controller
-@RequestMapping("v1/api/stack")
-public class StackController {
+@RequestMapping("v1/api/stackCategory")
+public class StackCategoryController {
 
     @Autowired
-    private StackService stackService;
+    private StackCategoryService stackCategoryService;
 
     @GetMapping("/{projectKey}")
-    public ResponseEntity<?> getStackList(@PathVariable String projectKey) {
+    public ResponseEntity<?> getStackCategoryList(@PathVariable String projectKey) {
 
-        Map<String, List<StackFindResDTO>> stackList = stackService.getStackList(projectKey);
+        List<StackCategoryFindResDTO> stackCategoryList = stackCategoryService.getStackCategory(projectKey);
 
-        if (stackList == null) {
-            return ErrorResponse.toResponseEntity(ErrorCode.STACK_NOT_EXIST);
+        if (stackCategoryList.isEmpty()) {
+            return ErrorResponse.toResponseEntity(ErrorCode.STACK_CATEGORY_NOT_EXIST);
         }
 
-        return ResponseDTO.toResponseEntity(ResponseEnum.FIND_STACK_SUCCESS, stackList);
+        return ResponseDTO.toResponseEntity(ResponseEnum.FIND_STACK_CATEGORY_SUCCESS, stackCategoryList);
 
     }
 
