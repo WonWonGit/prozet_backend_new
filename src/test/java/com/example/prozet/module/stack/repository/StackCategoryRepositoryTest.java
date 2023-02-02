@@ -11,6 +11,7 @@ import com.example.prozet.config.QueryDSLConfigTest;
 import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
+import com.example.prozet.modules.stack.domain.dto.response.StackCategoryFindResDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackCategoryResDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
@@ -51,8 +52,8 @@ public class StackCategoryRepositoryTest {
 
         StackCategoryEntity stackCategoryEntity = StackCategoryEntity.builder()
                 .category("BACK END")
-                .stackType(StackType.CUSTOMSTACK)
-                .projectEntity(projectEntityPS)
+                .stackType(StackType.DEFAULTSTACK)
+                .projectEntity(null)
                 .build();
 
         StackCategoryEntity stackCategoryEntityPS = stackCategoryRepository.save(stackCategoryEntity);
@@ -85,7 +86,7 @@ public class StackCategoryRepositoryTest {
     @Test
     public void getStackCategory() {
 
-        List<StackCategoryResDTO> categoryList = stackCategoryRepository
+        List<StackCategoryFindResDTO> categoryList = stackCategoryRepository
                 .getStackCategory("projectKey");
 
         assertThat(categoryList.get(0).getCategory()).isEqualTo("BACK END");

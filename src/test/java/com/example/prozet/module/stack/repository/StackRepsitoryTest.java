@@ -2,6 +2,8 @@ package com.example.prozet.module.stack.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import com.example.prozet.config.QueryDSLConfigTest;
 import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
+import com.example.prozet.modules.stack.domain.dto.response.StackFindResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
 import com.example.prozet.modules.stack.repository.StackCategoryRepository;
@@ -67,6 +70,15 @@ public class StackRepsitoryTest {
                 .orElseThrow(() -> new CustomException(ErrorCode.STACK_NOT_EXIST));
 
         assertThat(stackEntity.getName()).isEqualTo("spring");
+
+    }
+
+    @Test
+    public void getStackList() {
+
+        List<StackFindResDTO> stackList = stackRepository.getStackList("projectKey");
+
+        assertThat(stackList.get(0).getName()).isEqualTo("spring");
 
     }
 

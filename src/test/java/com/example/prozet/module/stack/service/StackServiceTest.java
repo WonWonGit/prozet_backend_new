@@ -8,9 +8,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,7 +23,7 @@ import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.stack.domain.dto.request.StackReqDTO;
-import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
+import com.example.prozet.modules.stack.domain.dto.response.StackFindResDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackUnmappedResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
@@ -64,6 +69,46 @@ public class StackServiceTest {
         StackUnmappedResDTO stackResDTO = stackService.saveStack(stackReqDTO, null);
 
         assertThat(stackResDTO.getIcon()).isEqualTo("iconUrl");
+    }
+
+    @Test
+    public void getStackListTest() {
+
+        when(stackRepository.getStackList(anyString())).thenReturn(getStackList());
+
+        Map<String, List<StackFindResDTO>> stackList = stackService.getStackList("projectKey");
+
+        Set<String> keys = stackList.keySet();
+
+        assertThat(keys.contains("FRONTEND")).isTrue();
+
+    }
+
+    // ************** DATA *****************/
+
+    public List<StackFindResDTO> getStackList() {
+
+        List<StackFindResDTO> stackList = new ArrayList<>();
+
+        StackFindResDTO stackDTO = StackFindResDTO.builder()
+                .category("BACKEND")
+                .name("Spring boot")
+                .icon("icon")
+                .categoryIdx(1)
+                .build();
+
+        stackList.add(stackDTO);
+
+        StackFindResDTO stackDTO2 = StackFindResDTO.builder()
+                .category("FRONTEND")
+                .name("React")
+                .icon("icon")
+                .categoryIdx(2)
+                .build();
+
+        stackList.add(stackDTO2);
+
+        return stackList;
     }
 
 }
