@@ -29,6 +29,7 @@ public enum ResponseEnum {
     DELETE_STACK_SUCCESS(HttpStatus.OK, "Delete Stack done"),
 
     SAVE_STACK_CATEGORY_SUCCESS(HttpStatus.OK, "Save stack category done"),
+    FIND_STACK_CATEGORY_SUCCESS(HttpStatus.OK, "Stack Category list"),
 
     SAVE_PROJECT_STACK_SUCCESS(HttpStatus.OK, "Save project stack done"),
     UPDATE_PROJECT_STACK_SUCCESS(HttpStatus.OK, "Update project stack done"),
