@@ -1,20 +1,15 @@
 package com.example.prozet.module.stack.controller;
 
-import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,21 +22,15 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultHandler;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.example.prozet.enum_pakage.StackType;
-import com.example.prozet.modules.member.domain.dto.response.MemberResDTO;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.service.ProjectService;
-import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackResDTO;
 import com.example.prozet.modules.projectStack.domain.entity.ProjectStackEntity;
 import com.example.prozet.modules.projectStack.service.ProjectStackService;
 import com.example.prozet.modules.stack.domain.dto.request.StackReqDTO;
-import com.example.prozet.modules.stack.domain.dto.response.StackCategoryResDTO;
-import com.example.prozet.modules.stack.domain.dto.response.StackResDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackUnmappedResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;

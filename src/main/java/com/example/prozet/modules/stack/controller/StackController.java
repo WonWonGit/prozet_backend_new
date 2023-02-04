@@ -14,12 +14,8 @@ import com.example.prozet.common.ErrorCode;
 import com.example.prozet.common.ErrorResponse;
 import com.example.prozet.common.ResponseDTO;
 import com.example.prozet.common.ResponseEnum;
-import com.example.prozet.modules.stack.domain.dto.response.StackCategoryFindResDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackFindResDTO;
-import com.example.prozet.modules.stack.service.StackCategoryService;
 import com.example.prozet.modules.stack.service.StackService;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @Controller
 @RequestMapping("v1/api/stack")
