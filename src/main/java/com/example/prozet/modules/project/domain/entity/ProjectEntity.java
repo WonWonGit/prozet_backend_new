@@ -20,7 +20,9 @@ import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
 import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
 import com.example.prozet.modules.projectMember.domain.entity.ProjectMemberEntity;
+import com.example.prozet.modules.projectSchedule.domain.entity.ProjectScheduleEntity;
 import com.example.prozet.modules.projectStack.domain.entity.ProjectStackEntity;
+import com.example.prozet.modules.schedule.domain.entity.ScheduleEntity;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
 
@@ -71,6 +73,9 @@ public class ProjectEntity {
 
     @OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<StackEntity> stackEntity;
+
+    @OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProjectScheduleEntity> projectScheduleEntity;
 
     public void saveProjectInfoEntity(ProjectInfoEntity projectInfoEntity) {
         this.projectInformation = projectInfoEntity;

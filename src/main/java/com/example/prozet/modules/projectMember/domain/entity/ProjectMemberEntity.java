@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -21,6 +22,7 @@ import com.example.prozet.enum_pakage.StateType;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
+import com.example.prozet.modules.projectSchedule.domain.entity.ProjectScheduleEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
