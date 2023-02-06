@@ -92,7 +92,7 @@ public class StackCategoryApiControllerTest {
 
                 String stackCategory = "stack";
 
-                mockMvc.perform(post("/v1/api/stackCategory/12112")
+                mockMvc.perform(post("/v1/api/stackcategory/12112")
                                 .header(accessHeader, BEARER + accessToken())
                                 .content(stackCategory))
                                 .andExpect(status().isOk());

@@ -17,7 +17,7 @@ import com.example.prozet.modules.stack.domain.dto.response.StackCategoryFindRes
 import com.example.prozet.modules.stack.service.StackCategoryService;
 
 @Controller
-@RequestMapping("v1/api/stackCategory")
+@RequestMapping("v1/api/stackcategory")
 public class StackCategoryController {
 
     @Autowired
