@@ -2,8 +2,11 @@ package com.example.prozet.modules.projectMember.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,8 +21,8 @@ import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.member.repository.MemberRepository;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
-import com.example.prozet.modules.projectMember.domain.dto.request.ProjectMemberEditReqDTO;
 import com.example.prozet.modules.projectMember.domain.dto.request.ProjectMemberReqDTO;
+import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberFindResDTO;
 import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 import com.example.prozet.modules.projectMember.domain.entity.ProjectMemberEntity;
 import com.example.prozet.modules.projectMember.repository.ProjectMemberRepository;
@@ -67,7 +70,7 @@ public class ProjectMemberService {
                 .memberEntity(memberEntity)
                 .projectEntity(projectEntity)
                 .deleteYn("N")
-                .state(StateType.PANDING)
+                .state(StateType.PENDING)
                 .build();
 
         ProjectMemberEntity projectMemberEntityPS = projectMemberRepository.save(projectMemberEntity);
@@ -82,25 +85,26 @@ public class ProjectMemberService {
         return null;
     }
 
-    public Map<String, Object> getProjectMember(String projectKey) {
+    public Map<StateType, List<ProjectMemberFindResDTO>> getProjectMemberGruopByState(String projectKey) {
 
-        Map<String, Object> member = new HashMap<String, Object>();
-        ArrayList<ProjectMemberResDTO> pendingList = new ArrayList<ProjectMemberResDTO>();
-        ArrayList<ProjectMemberResDTO> acceptedList = new ArrayList<ProjectMemberResDTO>();
+        List<ProjectMemberFindResDTO> projectMemberReqDTOs = projectMemberRepository
+                .findByProjectEntity_ProjectKey(projectKey)
+                .stream().filter(project -> project.getDeleteYn().equals("N"))
+                .map(ProjectMemberEntity::toProjectMemberFindResDTO)
+                .collect(Collectors.toList());
 
-        projectMemberRepository.findByProjectEntity_ProjectKey(projectKey)
-                .filter(project -> project.getDeleteYn().equals("N"))
-                .ifPresent(project -> {
-                    if (project.getState().equals(StateType.PANDING)) {
-                        pendingList.add(project.toProjectMemberResDTO());
-                    } else {
-                        acceptedList.add(project.toProjectMemberResDTO());
-                    }
-                });
+        Map<StateType, List<ProjectMemberFindResDTO>> projectMembers = projectMemberReqDTOs
+                .stream().collect(Collectors.groupingBy(ProjectMemberFindResDTO::getState));
 
-        member.put(StateType.ACCEPTED.getState(), acceptedList);
-        member.put(StateType.PANDING.getState(), pendingList);
-        return member;
+        return projectMembers;
+    }
+
+    public ProjectMemberResDTO getProjectMemberByIdx(Long idx) {
+
+        ProjectMemberEntity projectMemberEntity = projectMemberRepository.findByIdx(idx)
+                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_MEMBER_NOT_EXIST));
+
+        return projectMemberEntity.toProjectMemberResDTO();
     }
 
     @Transactional

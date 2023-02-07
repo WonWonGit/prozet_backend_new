@@ -3,9 +3,15 @@ package com.example.prozet.module.projectMember.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +28,7 @@ import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
 import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
 import com.example.prozet.modules.projectMember.domain.dto.request.ProjectMemberReqDTO;
+import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberFindResDTO;
 import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 import com.example.prozet.modules.projectMember.domain.entity.ProjectMemberEntity;
 import com.example.prozet.modules.projectMember.repository.ProjectMemberRepository;
@@ -62,7 +69,7 @@ public class ProjectMemberServiceTest {
                 ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
                                 .access(AccessType.READONLY)
                                 .deleteYn("N")
-                                .state(StateType.PANDING)
+                                .state(StateType.PENDING)
                                 .memberEntity(inviteMember)
                                 .projectEntity(projectEntity)
                                 .build();
@@ -76,7 +83,7 @@ public class ProjectMemberServiceTest {
                 ProjectMemberResDTO projectMemberList = projectMemberService.saveProjectMember(projectMemberReqDTO,
                                 "owner");
 
-                assertThat(projectMemberList.getState()).isEqualTo(StateType.PANDING);
+                assertThat(projectMemberList.getState()).isEqualTo(StateType.PENDING);
 
         }
 
@@ -97,7 +104,7 @@ public class ProjectMemberServiceTest {
                 ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
                                 .access(AccessType.READONLY)
                                 .deleteYn("N")
-                                .state(StateType.PANDING)
+                                .state(StateType.PENDING)
                                 .memberEntity(inviteMember)
                                 .projectEntity(projectEntity)
                                 .build();
@@ -129,7 +136,7 @@ public class ProjectMemberServiceTest {
                                 .idx(1L)
                                 .access(AccessType.READONLY)
                                 .deleteYn("N")
-                                .state(StateType.PANDING)
+                                .state(StateType.PENDING)
                                 .memberEntity(inviteMember)
                                 .projectEntity(projectEntity)
                                 .build();
@@ -161,7 +168,7 @@ public class ProjectMemberServiceTest {
                                 .idx(1L)
                                 .access(AccessType.READONLY)
                                 .deleteYn("N")
-                                .state(StateType.PANDING)
+                                .state(StateType.PENDING)
                                 .memberEntity(inviteMember)
                                 .projectEntity(projectEntity)
                                 .build();
@@ -172,6 +179,75 @@ public class ProjectMemberServiceTest {
                 ProjectMemberResDTO projectMemberResDTO = projectMemberService.deleteProjectMember(1L);
 
                 assertThat(projectMemberResDTO.getDeleteYn()).isEqualTo("Y");
+
+        }
+
+        @Test
+        public void getProjectMemberByStateTest() {
+
+                when(projectMemberRepository.findByProjectEntity_ProjectKey(anyString()))
+                        .thenReturn(getProjectMemberEntityList());
+
+                Map<StateType, List<ProjectMemberFindResDTO>> projctResDTO = projectMemberService.getProjectMemberGruopByState("projectKey");
+
+                System.out.println(projctResDTO);
+
+                Set<StateType> keys = projctResDTO.keySet();
+
+                assertThat(keys.contains(StateType.ACCEPTED)).isTrue();
+                assertThat(keys.contains(StateType.PENDING)).isTrue();
+
+        }
+
+        public List<ProjectMemberEntity> getProjectMemberEntityList() {
+
+                MemberEntity memberEntity1 = MemberEntity.builder()
+                                .idx(1L)
+                                .username("member1")
+                                .build();
+
+                ProjectMemberEntity projectMemberEntity1 = ProjectMemberEntity.builder()
+                                .projectEntity(getProjectEntity())
+                                .access(AccessType.EDIT)
+                                .state(StateType.ACCEPTED)
+                                .memberEntity(memberEntity1)
+                                .deleteYn("N")
+                                .build();
+
+                MemberEntity memberEntity2 = MemberEntity.builder()
+                                .idx(1L)
+                                .username("member2")
+                                .build();
+
+                ProjectMemberEntity projectMemberEntity2 = ProjectMemberEntity.builder()
+                                .projectEntity(getProjectEntity())
+                                .access(AccessType.EDIT)
+                                .state(StateType.PENDING)
+                                .memberEntity(memberEntity2)
+                                .deleteYn("N")
+                                .build();
+
+                List<ProjectMemberEntity> projectMemberEntities = new ArrayList<>();
+
+                projectMemberEntities.add(projectMemberEntity1);
+                projectMemberEntities.add(projectMemberEntity2);
+
+                return projectMemberEntities;
+        }
+
+        public ProjectEntity getProjectEntity() {
+
+                MemberEntity owner = MemberEntity.builder().idx(1L).username("owner").build();
+
+                ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().title("title").content("content")
+                                .idx(1L).build();
+
+                ProjectEntity projectEntity = ProjectEntity.builder().idx(1L).deleteYn("N").projectKey("projectKey123")
+                                .owner(owner)
+                                .projectInformation(projectInfoEntity)
+                                .build();
+
+                return projectEntity;
 
         }
 

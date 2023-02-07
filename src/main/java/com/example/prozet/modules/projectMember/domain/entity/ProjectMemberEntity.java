@@ -21,6 +21,7 @@ import com.example.prozet.enum_pakage.AccessType;
 import com.example.prozet.enum_pakage.StateType;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
+import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberFindResDTO;
 import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 import com.example.prozet.modules.projectSchedule.domain.entity.ProjectScheduleEntity;
 
@@ -65,6 +66,17 @@ public class ProjectMemberEntity {
                 .state(state)
                 .memberResDTO(memberEntity != null ? memberEntity.toMemberResDto() : null)
                 .projectResDTO(projectEntity != null ? projectEntity.toProjectResDTO() : null)
+                .deleteYn(deleteYn)
+                .build();
+    }
+
+    public ProjectMemberFindResDTO toProjectMemberFindResDTO() {
+
+        return ProjectMemberFindResDTO.builder()
+                .idx(idx)
+                .access(access)
+                .state(state)
+                .memberResDTO(memberEntity != null ? memberEntity.toMemberResDto() : null)
                 .deleteYn(deleteYn)
                 .build();
     }

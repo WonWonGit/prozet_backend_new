@@ -56,19 +56,21 @@ public class ProjectMemberRepositoryTest {
                 MemberEntity ownerEntity = MemberEntity.builder().username("owner").build();
                 MemberEntity ownerEntityPS = memberRepository.save(ownerEntity);
 
-                ProjectEntity projectEntity = ProjectEntity.builder().owner(ownerEntityPS).projectKey("projecKey")
+                ProjectEntity projectEntity = ProjectEntity.builder().owner(ownerEntityPS).projectKey("projectKey")
                                 .build();
                 ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
 
                 ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
                                 .access(AccessType.READONLY)
-                                .state(StateType.PANDING)
+                                .state(StateType.PENDING)
                                 .memberEntity(memberEntityPS)
                                 .projectEntity(projectEntityPS)
                                 .deleteYn("N")
                                 .build();
 
                 ProjectMemberEntity projectMemberEntityPS = projectMemberRepository.save(projectMemberEntity);
+
+                System.out.println(projectMemberEntityPS);
 
                 assertThat(projectMemberEntityPS.getAccess()).isEqualTo(AccessType.READONLY);
 
@@ -78,12 +80,10 @@ public class ProjectMemberRepositoryTest {
         @Order(1)
         public void findByProjectEntity_ProjectKeyTest() {
 
-                Optional<ProjectMemberEntity> projectMemberEntity = projectMemberRepository
+                List<ProjectMemberEntity> projectMemberEntity = projectMemberRepository
                                 .findByProjectEntity_ProjectKey("projectKey");
 
-                if (projectMemberEntity.isPresent()) {
-                        assertThat(projectMemberEntity.get().getState()).isEqualTo(StateType.PANDING);
-                }
+                assertThat(projectMemberEntity.get(0).getState()).isEqualTo(StateType.PENDING);
 
         }
 
@@ -101,7 +101,7 @@ public class ProjectMemberRepositoryTest {
                 Optional<ProjectMemberResDTO> result = projectMemberRepository.getProjectMember(3L);
 
                 if (result.isPresent()) {
-                        assertThat(result.get().getState()).isEqualTo(StateType.PANDING);
+                        assertThat(result.get().getState()).isEqualTo(StateType.PENDING);
                 }
         }
 
