@@ -59,7 +59,8 @@ public enum ErrorCode {
     UPDATE_PROJECT_STACK_FAIL(HttpStatus.BAD_REQUEST, "ECPS01", "Fail update project stack"),
     PROJECT_STACK_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "ECPS00", "Project owner only or access type edit only"),
     PROJECT_STACK_NOT_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "ECPS00", "Project stack is not exist"),
-    ;
+
+    SAVE_SCHEDULE_SAVE(HttpStatus.BAD_REQUEST, "ECPS00", "Fail save project schedule");
 
     private final HttpStatus httpStatus;
     private final String code;
