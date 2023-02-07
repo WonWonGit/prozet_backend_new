@@ -1,6 +1,5 @@
 package com.example.prozet.modules.projectInformation.domain.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -15,7 +14,6 @@ import javax.persistence.Table;
 import com.example.prozet.modules.file.domain.entity.FileMasterEntity;
 import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectInfoUpdateReqDTO;
 import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

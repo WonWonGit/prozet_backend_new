@@ -2,7 +2,7 @@ package com.example.prozet.enum_pakage;
 
 public enum StateType {
 
-    PANDING("PANDING"),
+    PENDING("PENDING"),
     ACCEPTED("ACCEPTED");
 
     private final String state;

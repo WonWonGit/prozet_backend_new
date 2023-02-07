@@ -1,6 +1,5 @@
 package com.example.prozet.modules.projectInformation.domain.dto.request;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
@@ -8,8 +7,6 @@ import javax.validation.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
-import com.example.prozet.utils.UtilsClass;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
