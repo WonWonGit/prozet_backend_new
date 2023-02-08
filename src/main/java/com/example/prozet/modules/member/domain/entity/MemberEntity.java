@@ -47,6 +47,7 @@ public class MemberEntity {
     private String deleteYn;
     @Column(name = "delete_date")
     private LocalDateTime deleteDate;
+    private String displayName;
 
     public MemberResDTO toMemberResDto() {
         return MemberResDTO.builder()

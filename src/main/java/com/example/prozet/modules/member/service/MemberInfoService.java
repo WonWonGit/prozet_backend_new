@@ -38,9 +38,6 @@ public class MemberInfoService {
     private FileService fileService;
 
     @Autowired
-    private FileRepository fileRepository;
-
-    @Autowired
     private FileMasterRepository fileMasterRepository;
 
     @Transactional

@@ -26,6 +26,7 @@ public class MemberResDTO {
     private Provider provider;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private String displayName;
 
     public MemberEntity toEntity() {
         return MemberEntity.builder()
@@ -35,6 +36,7 @@ public class MemberResDTO {
                 .email(email)
                 .provider(provider)
                 .role(role)
+                .displayName(displayName)
                 .build();
     }
 

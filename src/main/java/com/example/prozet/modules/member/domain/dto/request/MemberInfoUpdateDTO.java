@@ -15,5 +15,6 @@ public class MemberInfoUpdateDTO {
     private String github;
     private String blog;
     private int fileIdx;
+    private String displayName;
 
 }

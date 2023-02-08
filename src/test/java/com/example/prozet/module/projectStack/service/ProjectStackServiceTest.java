@@ -1,11 +1,10 @@
 package com.example.prozet.module.projectStack.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
-import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackResDTO;
 import com.example.prozet.modules.projectStack.domain.dto.response.ProjectStackUnmappedResDTO;
@@ -26,8 +24,6 @@ import com.example.prozet.modules.projectStack.service.ProjectStackService;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
 import com.example.prozet.modules.stack.repository.StackRepository;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class ProjectStackServiceTest {

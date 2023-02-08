@@ -22,6 +22,7 @@ public class MemberReqDTO {
     private String username;
     private String name;
     private String email;
+    private String displayName;
     @Enumerated(EnumType.STRING)
     private Provider provider;
     @Enumerated(EnumType.STRING)
@@ -35,6 +36,7 @@ public class MemberReqDTO {
                 .username(username)
                 .provider(provider)
                 .role(role)
+                .displayName(displayName)
                 .build();
     }
 
