@@ -5,12 +5,14 @@ import java.time.LocalDateTime;
 import com.example.prozet.modules.schedule.domain.entity.ScheduleEntity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class ScheduleReqDTO {
 
     private String title;
