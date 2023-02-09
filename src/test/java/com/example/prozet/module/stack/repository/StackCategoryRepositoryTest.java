@@ -44,12 +44,6 @@ public class StackCategoryRepositoryTest {
     @BeforeEach
     public void stackCategorySave() {
 
-        ProjectEntity projectEntity = ProjectEntity.builder()
-                .projectKey("projectKey")
-                .build();
-
-        ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
-
         StackCategoryEntity stackCategoryEntity = StackCategoryEntity.builder()
                 .category("BACK END")
                 .stackType(StackType.DEFAULTSTACK)
@@ -66,8 +60,6 @@ public class StackCategoryRepositoryTest {
                 .build();
 
         stackRepository.save(stackEntity);
-
-        System.out.println(stackCategoryRepository.findAll() + "$$$$");
 
     }
 

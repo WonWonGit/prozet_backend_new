@@ -42,7 +42,7 @@ public class StackCategoryEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "stack_type")
     private StackType stackType;
-    @OneToOne
+    @OneToOne(optional = true)
     @JoinColumn(name = "project_idx", referencedColumnName = "idx")
     private ProjectEntity projectEntity;
 

@@ -23,7 +23,7 @@ import com.example.prozet.security.auth.PrincipalDetails;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
-@RequestMapping("v1/api/stackCategory")
+@RequestMapping("v1/api/stackcategory")
 public class StackCategoryApiController {
 
     @Autowired

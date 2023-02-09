@@ -1,13 +1,16 @@
 package com.example.prozet.modules.schedule.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.example.prozet.modules.projectSchedule.domain.entity.ProjectScheduleEntity;
 import com.example.prozet.modules.schedule.domain.dto.response.ScheduleResDTO;
 
 import lombok.AllArgsConstructor;
@@ -30,6 +33,8 @@ public class ScheduleEntity {
     private LocalDateTime endDate;
     private String title;
     private String content;
+    @OneToMany(mappedBy = "scheduleEntity")
+    private List<ProjectScheduleEntity> projectSchedule;
 
     public ScheduleResDTO toScheduleResDTO() {
         return ScheduleResDTO.builder()
