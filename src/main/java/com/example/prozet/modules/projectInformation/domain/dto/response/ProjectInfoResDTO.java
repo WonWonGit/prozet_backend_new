@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+// @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProjectInfoResDTO {
 
     private Long idx;
@@ -33,8 +33,8 @@ public class ProjectInfoResDTO {
     private LocalDateTime endDate;
     private FileMasterDTO fileMaster;
 
-    @JsonIgnore
-    private ProjectResDTO projectResDTO;
+    // @JsonIgnore
+    // private ProjectResDTO projectResDTO;
 
     public ProjectInfoEntity toEntity() {
         return ProjectInfoEntity.builder()

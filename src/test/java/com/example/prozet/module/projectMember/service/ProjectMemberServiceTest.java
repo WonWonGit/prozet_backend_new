@@ -20,8 +20,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.prozet.enum_pakage.AccessType;
+import com.example.prozet.enum_pakage.ProjectMemberType;
+import com.example.prozet.enum_pakage.Provider;
+import com.example.prozet.enum_pakage.Role;
 import com.example.prozet.enum_pakage.StateType;
 import com.example.prozet.modules.email.service.EmailService;
+import com.example.prozet.modules.member.domain.dto.MemberDTO;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.member.repository.MemberRepository;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
@@ -53,12 +57,42 @@ public class ProjectMemberServiceTest {
         MemberRepository memberRepository;
 
         @Test
+        public void saveProjectOwnerTest() {
+
+                MemberDTO memberDTO = MemberDTO.builder()
+                                .idx(1L)
+                                .displayName("name")
+                                .name("name")
+                                .username("google_123")
+                                .provider(Provider.GOOGLE)
+                                .email("test@gmail.com")
+                                .role(Role.USER)
+                                .build();
+
+                ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
+                                .memberEntity(memberDTO.toMemberEntity())
+                                .access(AccessType.EDIT)
+                                .projectEntity(getProjectEntity())
+                                .projectMemberType(ProjectMemberType.OWNER)
+                                .state(StateType.ACCEPTED)
+                                .build();
+
+                when(projectMemberRepository.save(any())).thenReturn(projectMemberEntity);
+
+                ProjectMemberResDTO projectMemberResDTO = projectMemberService.saveProjectOwner(memberDTO,
+                                getProjectEntity().toProjectResDTO());
+
+                assertThat(projectMemberResDTO.getProjectMemberType()).isEqualTo(ProjectMemberType.OWNER);
+
+        }
+
+        @Test
         public void saveProjectMemberTest() {
 
-                MemberEntity owner = MemberEntity.builder().username("owner").build();
+                // MemberEntity owner = MemberEntity.builder().username("owner").build();
 
-                ProjectEntity projectEntity = ProjectEntity.builder().deleteYn("N").projectKey("projectKey123")
-                                .owner(owner)
+                ProjectEntity projectEntity = ProjectEntity.builder()
+                                .deleteYn("N").projectKey("projectKey123")
                                 .build();
 
                 MemberEntity inviteMember = MemberEntity.builder().username("inviteMember").build();
@@ -90,13 +124,11 @@ public class ProjectMemberServiceTest {
         @Test
         public void editProjectMemberStateTest() {
 
-                MemberEntity owner = MemberEntity.builder().idx(1L).username("owner").build();
-
                 ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().idx(1L).build();
 
                 ProjectEntity projectEntity = ProjectEntity.builder().idx(1L).deleteYn("N").projectKey("projectKey123")
-                                .owner(owner)
-                                .projectInformation(projectInfoEntity)
+                                // .owner(owner)
+                                // .projectInformation(projectInfoEntity)
                                 .build();
 
                 MemberEntity inviteMember = MemberEntity.builder().idx(2L).username("inviteMember").build();
@@ -126,7 +158,7 @@ public class ProjectMemberServiceTest {
                 ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().idx(1L).build();
 
                 ProjectEntity projectEntity = ProjectEntity.builder().idx(1L).deleteYn("N").projectKey("projectKey123")
-                                .owner(owner)
+                                // .owner(owner)
                                 .projectInformation(projectInfoEntity)
                                 .build();
 
@@ -158,7 +190,7 @@ public class ProjectMemberServiceTest {
                 ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().idx(1L).build();
 
                 ProjectEntity projectEntity = ProjectEntity.builder().idx(1L).deleteYn("N").projectKey("projectKey123")
-                                .owner(owner)
+                                // .owner(owner)
                                 .projectInformation(projectInfoEntity)
                                 .build();
 
@@ -237,14 +269,8 @@ public class ProjectMemberServiceTest {
 
         public ProjectEntity getProjectEntity() {
 
-                MemberEntity owner = MemberEntity.builder().idx(1L).username("owner").build();
-
-                ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().title("title").content("content")
-                                .idx(1L).build();
-
-                ProjectEntity projectEntity = ProjectEntity.builder().idx(1L).deleteYn("N").projectKey("projectKey123")
-                                .owner(owner)
-                                .projectInformation(projectInfoEntity)
+                ProjectEntity projectEntity = ProjectEntity.builder().idx(1L)
+                                .deleteYn("N").projectKey("projectKey123")
                                 .build();
 
                 return projectEntity;

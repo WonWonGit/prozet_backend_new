@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.example.prozet.config.QueryDSLConfigTest;
 import com.example.prozet.enum_pakage.AccessType;
+import com.example.prozet.enum_pakage.ProjectMemberType;
 import com.example.prozet.enum_pakage.StateType;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.member.repository.MemberRepository;
@@ -56,7 +57,9 @@ public class ProjectMemberRepositoryTest {
                 MemberEntity ownerEntity = MemberEntity.builder().username("owner").build();
                 MemberEntity ownerEntityPS = memberRepository.save(ownerEntity);
 
-                ProjectEntity projectEntity = ProjectEntity.builder().owner(ownerEntityPS).projectKey("projectKey")
+                ProjectEntity projectEntity = ProjectEntity.builder()
+                                .projectKey("projectKey")
+                                .deleteYn("N")
                                 .build();
                 ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
 
@@ -65,14 +68,25 @@ public class ProjectMemberRepositoryTest {
                                 .state(StateType.PENDING)
                                 .memberEntity(memberEntityPS)
                                 .projectEntity(projectEntityPS)
+                                .projectMemberType(ProjectMemberType.TEAMMEMBER)
+                                .deleteYn("N")
+                                .build();
+
+                ProjectMemberEntity projectMemberEntity2 = ProjectMemberEntity.builder()
+                                .access(AccessType.EDIT)
+                                .state(StateType.ACCEPTED)
+                                .memberEntity(ownerEntityPS)
+                                .projectEntity(projectEntityPS)
+                                .projectMemberType(ProjectMemberType.OWNER)
                                 .deleteYn("N")
                                 .build();
 
                 ProjectMemberEntity projectMemberEntityPS = projectMemberRepository.save(projectMemberEntity);
 
-                System.out.println(projectMemberEntityPS);
+                ProjectMemberEntity projectMemberEntityPS2 = projectMemberRepository.save(projectMemberEntity2);
 
                 assertThat(projectMemberEntityPS.getAccess()).isEqualTo(AccessType.READONLY);
+                assertThat(projectMemberEntityPS2.getProjectMemberType()).isEqualTo(ProjectMemberType.OWNER);
 
         }
 

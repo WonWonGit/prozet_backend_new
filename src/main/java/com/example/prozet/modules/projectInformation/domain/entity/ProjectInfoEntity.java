@@ -12,6 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.example.prozet.modules.file.domain.entity.FileMasterEntity;
+import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectInfoUpdateReqDTO;
 import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
 
@@ -39,7 +40,10 @@ public class ProjectInfoEntity {
     private LocalDateTime endDate;
     @OneToOne
     @JoinColumn(name = "file_master_idx", referencedColumnName = "idx")
-    FileMasterEntity fileMasterEntity;
+    private FileMasterEntity fileMasterEntity;
+    @OneToOne(optional = false)
+    @JoinColumn(name = "project_idx", referencedColumnName = "idx")
+    private ProjectEntity projectEntity;
 
     public void saveFileMasterEntity(FileMasterEntity fileMasterEntity) {
         this.fileMasterEntity = fileMasterEntity;
