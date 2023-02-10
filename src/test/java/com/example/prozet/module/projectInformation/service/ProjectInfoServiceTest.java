@@ -29,6 +29,7 @@ import com.example.prozet.modules.file.service.FileService;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
+import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectInfoReqDTO;
 import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectInfoUpdateReqDTO;
 import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
 import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
@@ -61,93 +62,30 @@ public class ProjectInfoServiceTest {
         String newPath = "src/test/resources/spaceship.png";
         String newFileName = "spaceship";
 
-        private MemberEntity getMemberEntity() {
-                return MemberEntity.builder().name("name").email("test@gmail").username("username").build();
-        }
+        @Test
+        public void saveProjectInfoTest() {
 
-        private ProjectInfoEntity getProjectInfoWithoutFileEntity() {
-
-                ProjectEntity projectEntity = getProjectEntity();
-
-                ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().title("title")
+                ProjectInfoReqDTO projectInfoReqDTO = ProjectInfoReqDTO.builder()
+                                .title("title")
                                 .content("content")
                                 .startDate(LocalDateTime.now())
-                                .fileMasterEntity(null)
-                                .endDate(LocalDateTime.now()).build();
-
-                return projectInfoEntity;
-        }
-
-        private ProjectEntity getProjectEntity() {
-                ProjectEntity projectEntity = ProjectEntity.builder().owner(getMemberEntity())
-                                .projectKey("projectKey").deleteYn("N").build();
-
-                return projectEntity;
-        }
-
-        private ProjectInfoEntity getProjectInfoWithFileEntity() {
-
-                FileMasterEntity fileMasterEntity = FileMasterEntity.builder().idx(1)
-                                .category(FileType.PROJECT_MAIN.fileType())
+                                .endDate(LocalDateTime.now())
                                 .build();
 
-                FileEntity fileEntity = FileEntity.builder().idx(1).deleteYn("N").extension("png").fileKey("fileKey")
-                                .fileMaster(fileMasterEntity).build();
-
-                fileMasterEntity.setFileList(List.of(fileEntity));
-
-                ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().title("title")
+                ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder()
+                                .idx(1L)
+                                .title("title")
                                 .content("content")
-                                .fileMasterEntity(fileMasterEntity)
                                 .startDate(LocalDateTime.now())
-                                .endDate(LocalDateTime.now()).build();
-
-                return projectInfoEntity;
-
-        }
-
-        private FileMasterEntity getFileMasterEntity() {
-                return FileMasterEntity.builder().idx(1)
-                                .category(FileType.PROJECT_MAIN.fileType())
+                                .endDate(LocalDateTime.now())
                                 .build();
-        }
 
-        private FileEntity getFileEntity() {
-                return FileEntity.builder().deleteYn("N")
-                                .fileMaster(getFileMasterEntity())
-                                .extension(contentType)
-                                .originalName(fileName)
-                                .idx(1)
-                                .url("urltest")
-                                .build();
-        }
+                when(projectInfoRepository.save(any())).thenReturn(projectInfoEntity);
 
-        private FileEntity getNewFileEntity() {
-                return FileEntity.builder().deleteYn("N")
-                                .fileMaster(getFileMasterEntity())
-                                .extension(contentType)
-                                .originalName("spaceship")
-                                .idx(2)
-                                .url("urltest2")
-                                .build();
-        }
+                ProjectInfoResDTO projectInfoResDTO = projectInfoService
+                                .saveProjectInfo(getProjectEntity().toProjectResDTO(), projectInfoReqDTO, null);
 
-        private MultipartFile getFile() throws IOException {
-
-                FileInputStream fileInputStream = new FileInputStream(new File(path));
-                MultipartFile file = new MockMultipartFile(fileName, fileName + "." + contentType, contentType,
-                                fileInputStream);
-
-                return file;
-        }
-
-        private MultipartFile getNewFile() throws IOException {
-
-                FileInputStream fileInputStream = new FileInputStream(new File("src/test/resources/spaceship.png"));
-                MultipartFile file = new MockMultipartFile(newFileName, newFileName + "." + contentType, contentType,
-                                fileInputStream);
-
-                return file;
+                assertThat(projectInfoResDTO.getTitle()).isEqualTo("title");
         }
 
         /**
@@ -240,6 +178,96 @@ public class ProjectInfoServiceTest {
 
                 assertThat(projectInfoResDTO.getFileMaster().getFileList().get(0).getOriginalName())
                                 .isEqualTo(newFileName);
+        }
+
+        private MemberEntity getMemberEntity() {
+                return MemberEntity.builder().name("name").email("test@gmail").username("username").build();
+        }
+
+        private ProjectInfoEntity getProjectInfoWithoutFileEntity() {
+
+                ProjectEntity projectEntity = getProjectEntity();
+
+                ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().title("title")
+                                .content("content")
+                                .startDate(LocalDateTime.now())
+                                .fileMasterEntity(null)
+                                .endDate(LocalDateTime.now()).build();
+
+                return projectInfoEntity;
+        }
+
+        private ProjectEntity getProjectEntity() {
+                ProjectEntity projectEntity = ProjectEntity.builder()
+                                .projectKey("projectKey")
+                                .deleteYn("N").build();
+
+                return projectEntity;
+        }
+
+        private ProjectInfoEntity getProjectInfoWithFileEntity() {
+
+                FileMasterEntity fileMasterEntity = FileMasterEntity.builder().idx(1)
+                                .category(FileType.PROJECT_MAIN.fileType())
+                                .build();
+
+                FileEntity fileEntity = FileEntity.builder().idx(1).deleteYn("N").extension("png").fileKey("fileKey")
+                                .fileMaster(fileMasterEntity).build();
+
+                fileMasterEntity.setFileList(List.of(fileEntity));
+
+                ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().title("title")
+                                .content("content")
+                                .fileMasterEntity(fileMasterEntity)
+                                .startDate(LocalDateTime.now())
+                                .endDate(LocalDateTime.now()).build();
+
+                return projectInfoEntity;
+
+        }
+
+        private FileMasterEntity getFileMasterEntity() {
+                return FileMasterEntity.builder().idx(1)
+                                .category(FileType.PROJECT_MAIN.fileType())
+                                .build();
+        }
+
+        private FileEntity getFileEntity() {
+                return FileEntity.builder().deleteYn("N")
+                                .fileMaster(getFileMasterEntity())
+                                .extension(contentType)
+                                .originalName(fileName)
+                                .idx(1)
+                                .url("urltest")
+                                .build();
+        }
+
+        private FileEntity getNewFileEntity() {
+                return FileEntity.builder().deleteYn("N")
+                                .fileMaster(getFileMasterEntity())
+                                .extension(contentType)
+                                .originalName("spaceship")
+                                .idx(2)
+                                .url("urltest2")
+                                .build();
+        }
+
+        private MultipartFile getFile() throws IOException {
+
+                FileInputStream fileInputStream = new FileInputStream(new File(path));
+                MultipartFile file = new MockMultipartFile(fileName, fileName + "." + contentType, contentType,
+                                fileInputStream);
+
+                return file;
+        }
+
+        private MultipartFile getNewFile() throws IOException {
+
+                FileInputStream fileInputStream = new FileInputStream(new File("src/test/resources/spaceship.png"));
+                MultipartFile file = new MockMultipartFile(newFileName, newFileName + "." + contentType, contentType,
+                                fileInputStream);
+
+                return file;
         }
 
 }

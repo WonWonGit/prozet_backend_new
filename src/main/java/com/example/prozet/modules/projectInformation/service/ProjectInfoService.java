@@ -13,8 +13,10 @@ import com.example.prozet.enum_pakage.AccessType;
 import com.example.prozet.enum_pakage.FileType;
 import com.example.prozet.modules.file.domain.dto.response.FileMasterDTO;
 import com.example.prozet.modules.file.service.FileService;
+import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
+import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectInfoReqDTO;
 import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectInfoUpdateReqDTO;
 import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
 import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
@@ -39,6 +41,23 @@ public class ProjectInfoService {
     private FileService fileService;
 
     @Transactional
+    public ProjectInfoResDTO saveProjectInfo(ProjectResDTO projectResDTO, ProjectInfoReqDTO projectInfoReqDTO,
+            MultipartFile projectImg) {
+
+        ProjectInfoEntity projectInfoEntity = projectInfoReqDTO.toEntity();
+
+        if (projectImg != null) {
+            FileMasterDTO fileMasterDTO = fileService.fileSave(FileType.PROJECT_MAIN, projectImg);
+            projectInfoEntity.saveFileMasterEntity(fileMasterDTO.toEntity());
+        }
+
+        ProjectInfoEntity projectInfoEntityPS = projectInfoRepository.save(projectInfoEntity);
+
+        return projectInfoEntityPS.toProjectInfoResDTO();
+
+    }
+
+    @Transactional
     public ProjectInfoResDTO updateProjectInfo(String projectKey, String username,
             ProjectInfoUpdateReqDTO projectInfoUpdateReqDTO, MultipartFile projectImg) {
 
@@ -54,9 +73,10 @@ public class ProjectInfoService {
                     member -> member.getUsername().equals(username));
         }
 
-        if (!projectEntity.getOwner().getUsername().equals(username) || projectMember) {
-            return null;
-        }
+        // if (!projectEntity.getOwner().getUsername().equals(username) ||
+        // projectMember) {
+        // return null;
+        // }
 
         ProjectInfoEntity projectInfoEntity = projectEntity.getProjectInformation();
 

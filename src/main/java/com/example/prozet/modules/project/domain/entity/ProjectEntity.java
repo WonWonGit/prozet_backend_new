@@ -16,6 +16,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
+import com.example.prozet.modules.project.domain.dto.response.ProjectListDTO;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
 import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
@@ -25,6 +26,7 @@ import com.example.prozet.modules.projectStack.domain.entity.ProjectStackEntity;
 import com.example.prozet.modules.schedule.domain.entity.ScheduleEntity;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
+import com.example.prozet.utils.UtilsClass;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,16 +56,16 @@ public class ProjectEntity {
     // @ColumnDefault("N")
     private String deleteYn;
 
-    @OneToOne
-    @JoinColumn(name = "member_idx", referencedColumnName = "idx")
-    private MemberEntity owner;
+    // @OneToOne(optional = false)
+    // @JoinColumn(name = "member_idx", referencedColumnName = "idx")
+    // private MemberEntity owner;
 
     @OneToOne
     @JoinColumn(name = "projectInfo_idx", referencedColumnName = "idx")
     private ProjectInfoEntity projectInformation;
 
     @OneToMany(mappedBy = "projectEntity")
-    private List<ProjectMemberEntity> ProjectMemberEntity;
+    private List<ProjectMemberEntity> projectMemberEntity;
 
     @OneToMany(mappedBy = "projectEntity")
     private List<ProjectStackEntity> projectStackEntitiy;
@@ -86,19 +88,39 @@ public class ProjectEntity {
                 .idx(idx)
                 .projectKey(projectKey)
                 .deleteYn(deleteYn)
-                .owner(owner.toMemberResDto())
+                // .owner(owner.toMemberResDto())
                 .projectInfoResDTO(projectInformation != null ? projectInformation.toProjectInfoResDTO() : null)
                 .build();
     }
 
-    public ProjectResDTO toProjectResDTO(ProjectInfoResDTO projectInfoResDTO) {
-        return ProjectResDTO.builder()
-                .idx(idx)
-                .projectKey(projectKey)
-                .owner(owner.toMemberResDto())
-                .projectInfoResDTO(projectInfoResDTO != null ? projectInfoResDTO : null)
-                .deleteYn(deleteYn)
-                .build();
-    }
+    // private Long idx;
+    // private String projectKey;
+    // private String title;
+    // // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    // private String startDate;
+    // // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    // private String endDate;
+    // private String projectMemberType;
+
+    // public ProjectListDTO toProjectListDTO(){
+    // return ProjectListDTO.builder()
+    // .idx(idx)
+    // .projectKey(projectKey)
+    // .title(projectInformation.getTitle())
+    // .startDate(UtilsClass.date(projectInformation.getStartDate()))
+    // .endDate(UtilsClass.date(projectInformation.getEndDate()))
+    // .projectMemberType()
+
+    // }
+
+    // public ProjectResDTO toProjectResDTO(ProjectInfoResDTO projectInfoResDTO) {
+    // return ProjectResDTO.builder()
+    // .idx(idx)
+    // .projectKey(projectKey)
+    // // .owner(owner.toMemberResDto())
+    // .projectInfoResDTO(projectInfoResDTO != null ? projectInfoResDTO : null)
+    // .deleteYn(deleteYn)
+    // .build();
+    // }
 
 }
