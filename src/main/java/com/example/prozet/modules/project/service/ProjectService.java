@@ -22,6 +22,7 @@ import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
 import com.example.prozet.modules.project.utils.ProjectUtil;
 import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectInfoReqDTO;
+import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
 import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
 import com.example.prozet.modules.projectInformation.repository.ProjectInfoRepository;
 import com.example.prozet.utils.UtilsClass;
@@ -31,12 +32,6 @@ import com.example.prozet.utils.UtilsClass;
 public class ProjectService {
     @Autowired
     private ProjectRepository projectRepository;
-
-    @Autowired
-    private ProjectInfoRepository projectInfoRepository;
-
-    @Autowired
-    private FileService fileService;
 
     public ProjectResDTO findByProjectKey(String projectKey) {
 
@@ -50,44 +45,67 @@ public class ProjectService {
     }
 
     @Transactional
-    public ProjectResDTO createProject(MemberEntity memberEntity, ProjectInfoReqDTO projectInfoReqDTO,
-            MultipartFile projectImg) {
-
-        ProjectInfoEntity projectInfoEntity = projectInfoReqDTO.toEntity();
-
-        if (projectImg != null) {
-            FileMasterDTO fileMasterDTO = fileService.fileSave(FileType.PROJECT_MAIN, projectImg);
-            projectInfoEntity.saveFileMasterEntity(fileMasterDTO.toEntity());
-        }
-
-        ProjectInfoEntity projectInfoEntityPS = projectInfoRepository.save(projectInfoEntity);
+    public ProjectResDTO createProject(ProjectInfoResDTO projectInfoResDTO) {
 
         ProjectEntity projectEntity = ProjectEntity.builder()
-                .owner(memberEntity)
                 .projectKey(ProjectUtil.createProjectKey())
+                .projectInformation(projectInfoResDTO.toEntity())
                 .deleteYn("N")
                 .build();
 
-        projectEntity.saveProjectInfoEntity(projectInfoEntityPS);
-
         ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
 
-        if (projectInfoEntityPS == null) {
+        if (projectEntityPS == null) {
             return null;
         }
 
-        return projectEntityPS.toProjectResDTO(projectInfoEntityPS.toProjectInfoResDTO());
-
+        return projectEntityPS.toProjectResDTO();
     }
+
+    // @Transactional
+    // public ProjectResDTO __createProject(
+    // MemberEntity memberEntity,
+    // ProjectInfoReqDTO projectInfoReqDTO,
+    // MultipartFile projectImg) {
+
+    // ProjectInfoEntity projectInfoEntity = projectInfoReqDTO.toEntity();
+
+    // if (projectImg != null) {
+    // FileMasterDTO fileMasterDTO = fileService.fileSave(FileType.PROJECT_MAIN,
+    // projectImg);
+    // projectInfoEntity.saveFileMasterEntity(fileMasterDTO.toEntity());
+    // }
+
+    // ProjectInfoEntity projectInfoEntityPS =
+    // projectInfoRepository.save(projectInfoEntity);
+
+    // ProjectEntity projectEntity = ProjectEntity.builder()
+    // // .owner(memberEntity)
+    // .projectKey(ProjectUtil.createProjectKey())
+    // .deleteYn("N")
+    // .build();
+
+    // projectEntity.saveProjectInfoEntity(projectInfoEntityPS);
+
+    // ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
+
+    // if (projectInfoEntityPS == null) {
+    // return null;
+    // }
+
+    // return
+    // projectEntityPS.toProjectResDTO(projectInfoEntityPS.toProjectInfoResDTO());
+
+    // }
 
     @Transactional
     public void deleteProject(String projectKey, String username) {
         ProjectEntity projectEntity = projectRepository.findByProjectKeyAndDeleteYn(projectKey, "N")
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_EXIST));
 
-        if (!projectEntity.getOwner().getUsername().equals(username)) {
-            throw new CustomException(ErrorCode.PROJECT_OWNER_ONLY);
-        }
+        // if (!projectEntity.getOwner().getUsername().equals(username)) {
+        // throw new CustomException(ErrorCode.PROJECT_OWNER_ONLY);
+        // }
 
         projectEntity.setDeleteYn("Y");
         projectEntity.setDeleteDate(LocalDateTime.now());

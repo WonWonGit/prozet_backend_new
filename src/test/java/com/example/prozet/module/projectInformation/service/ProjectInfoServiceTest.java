@@ -83,7 +83,7 @@ public class ProjectInfoServiceTest {
                 when(projectInfoRepository.save(any())).thenReturn(projectInfoEntity);
 
                 ProjectInfoResDTO projectInfoResDTO = projectInfoService
-                                .saveProjectInfo(getProjectEntity().toProjectResDTO(), projectInfoReqDTO, null);
+                                .saveProjectInfo(projectInfoReqDTO, null);
 
                 assertThat(projectInfoResDTO.getTitle()).isEqualTo("title");
         }

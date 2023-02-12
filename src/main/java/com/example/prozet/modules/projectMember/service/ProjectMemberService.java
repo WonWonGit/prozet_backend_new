@@ -1,11 +1,8 @@
 package com.example.prozet.modules.projectMember.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.prozet.common.CustomException;
 import com.example.prozet.common.ErrorCode;
 import com.example.prozet.enum_pakage.AccessType;
+import com.example.prozet.enum_pakage.ProjectMemberType;
 import com.example.prozet.enum_pakage.StateType;
 import com.example.prozet.modules.email.service.EmailService;
+import com.example.prozet.modules.member.domain.dto.MemberDTO;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.member.repository.MemberRepository;
+import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
+import com.example.prozet.modules.project.utils.ProjectUtil;
 import com.example.prozet.modules.projectMember.domain.dto.request.ProjectMemberReqDTO;
 import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberFindResDTO;
 import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
@@ -50,9 +51,9 @@ public class ProjectMemberService {
                 .findByProjectKeyAndDeleteYn(projectMemberReqDTO.getProjectKey(), "N")
                 .orElseThrow(() -> new CustomException(ErrorCode.FIND_PROJECT_INFO_FAIL));
 
-        if (!projectEntity.getOwner().getUsername().equals(owner)) {
-            throw new CustomException(ErrorCode.PROJECT_OWNER_ONLY);
-        }
+        // if (!projectEntity.getOwner().getUsername().equals(owner)) {
+        // throw new CustomException(ErrorCode.PROJECT_OWNER_ONLY);
+        // }
 
         ProjectMemberResDTO invitedMember = projectMemberRepository
                 .getInvitedMember(projectMemberReqDTO.getProjectKey(), projectMemberReqDTO.getUsername());
@@ -76,13 +77,33 @@ public class ProjectMemberService {
         ProjectMemberEntity projectMemberEntityPS = projectMemberRepository.save(projectMemberEntity);
 
         if (projectMemberEntityPS != null) {
-            emailService.sendMail(memberEntity.getEmail(), memberEntity.getUsername(),
-                    projectEntity.getOwner().getEmail(), projectMemberReqDTO.getProjectKey());
+            // emailService.sendMail(memberEntity.getEmail(), memberEntity.getUsername(),
+            // projectEntity.getOwner().getEmail(), projectMemberReqDTO.getProjectKey());
 
             return projectMemberEntityPS.toProjectMemberResDTO();
         }
 
         return null;
+    }
+
+    @Transactional
+    public ProjectMemberResDTO saveProjectOwner(MemberDTO memberDTO, ProjectResDTO projectResDTO) {
+
+        MemberEntity memberEntity = memberDTO.toMemberEntity();
+
+        ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
+                .access(AccessType.EDIT)
+                .memberEntity(memberEntity)
+                .projectEntity(projectResDTO.toEntity())
+                .deleteYn("N")
+                .state(StateType.ACCEPTED)
+                .projectMemberType(ProjectMemberType.OWNER)
+                .build();
+
+        ProjectMemberEntity projectMemberEntityPS = projectMemberRepository.save(projectMemberEntity);
+
+        return projectMemberEntityPS.toProjectMemberResDTO();
+
     }
 
     public Map<StateType, List<ProjectMemberFindResDTO>> getProjectMemberGruopByState(String projectKey) {
@@ -129,7 +150,9 @@ public class ProjectMemberService {
         ProjectMemberResDTO memberResDTO = projectMemberRepository.getProjectMember(idx)
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_MEMBER_NOT_EXIST));
 
-        if (!memberResDTO.getProjectResDTO().getOwner().getUsername().equals(username)) {
+        boolean isOwner = ProjectUtil.projectOwnerCheck(memberResDTO, username);
+
+        if (!isOwner) {
             throw new CustomException(ErrorCode.PROJECT_OWNER_ONLY);
         }
 

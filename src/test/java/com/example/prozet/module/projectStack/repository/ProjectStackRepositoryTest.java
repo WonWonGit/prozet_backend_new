@@ -88,18 +88,8 @@ public class ProjectStackRepositoryTest {
         // ********** Create Model ***********/
         public ProjectEntity getProjectEntity() {
 
-                MemberEntity memberEntity = MemberEntity.builder()
-                                .username("username")
-                                .name("name")
-                                .email("email")
-                                .build();
-
-                MemberEntity memberEntityPS = memberRepository.save(memberEntity);
-
                 ProjectEntity projectEntity = ProjectEntity.builder()
                                 .projectKey("projectKey")
-                                .projectInformation(null)
-                                .owner(memberEntityPS)
                                 .build();
 
                 return projectEntity;

@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.example.prozet.enum_pakage.AccessType;
+import com.example.prozet.enum_pakage.ProjectMemberType;
 import com.example.prozet.enum_pakage.StateType;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
@@ -45,6 +46,8 @@ public class ProjectMemberEntity {
     private AccessType access;
     @Enumerated(EnumType.STRING)
     private StateType state;
+    @Enumerated(EnumType.STRING)
+    private ProjectMemberType projectMemberType;
     @CreationTimestamp
     private LocalDateTime createDate;
     private String deleteYn;
@@ -67,6 +70,7 @@ public class ProjectMemberEntity {
                 .memberResDTO(memberEntity != null ? memberEntity.toMemberResDto() : null)
                 .projectResDTO(projectEntity != null ? projectEntity.toProjectResDTO() : null)
                 .deleteYn(deleteYn)
+                .projectMemberType(projectMemberType)
                 .build();
     }
 

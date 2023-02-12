@@ -72,14 +72,11 @@ public class StackCategoryApiControllerTest {
         @WithMockUser(username = "google_123123", value = "user")
         public void saveStackCategoryTest() throws JsonProcessingException, Exception {
 
-                MemberResDTO owner = MemberResDTO.builder().username("google_123123").build();
-
                 ProjectInfoResDTO projectInfoResDTO = ProjectInfoResDTO.builder()
                                 .title("projectTitle")
                                 .build();
 
                 ProjectResDTO projectResDTO = ProjectResDTO.builder()
-                                .owner(owner)
                                 .projectInfoResDTO(projectInfoResDTO)
                                 .projectKey("projectKey")
                                 .build();

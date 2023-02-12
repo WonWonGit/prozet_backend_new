@@ -36,9 +36,9 @@ public class ProjectUtil {
 
     }
 
-    public static boolean projectOwnerCheck(MemberResDTO memberResDTO, String username) {
+    public static boolean projectOwnerCheck(ProjectMemberResDTO memberResDTO, String username) {
 
-        if (memberResDTO.getUsername().equals(username)) {
+        if (memberResDTO.getMemberResDTO().getUsername().equals(username)) {
             return true;
         } else {
             return false;

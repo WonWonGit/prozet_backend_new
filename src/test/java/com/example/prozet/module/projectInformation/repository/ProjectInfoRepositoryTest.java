@@ -36,23 +36,10 @@ public class ProjectInfoRepositoryTest {
                 .content("content")
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now())
-                .projectEntity(getProjectEntity())
                 .build();
 
         ProjectInfoEntity projectInfoEntityPS = projectInfoRepository.save(projectInfoEntity);
         assertThat(projectInfoEntityPS.getTitle()).isEqualTo("title");
-
-    }
-
-    private ProjectEntity getProjectEntity() {
-        ProjectEntity projectEntity = ProjectEntity.builder()
-                .projectKey("projectKey")
-                .deleteYn("N")
-                .build();
-
-        ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
-
-        return projectEntityPS;
 
     }
 

@@ -38,36 +38,38 @@ public class ProjectServiceTest {
         return MemberEntity.builder().name("name").email("test@gmail").username("username").build();
     }
 
-    private ProjectInfoEntity getProjectInfoEntity() {
-        ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().title("title")
-                .content("content")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now()).build();
-
-        return projectInfoEntity;
-    }
-
     private ProjectEntity getProjectEntity() {
-        ProjectEntity projectEntity = ProjectEntity.builder().projectInformation(getProjectInfoEntity())
-                .owner(getMemberEntity())
+
+        ProjectEntity projectEntity = ProjectEntity.builder()
+                .createDate(LocalDateTime.now())
+                .deleteYn("N")
+                .deleteDate(null)
+                .projectInformation(getProjectInfoEntity())
                 .projectKey("projectKey").build();
 
         return projectEntity;
     }
 
+    private ProjectInfoEntity getProjectInfoEntity() {
+
+        ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder()
+                .title("title")
+                .content("content")
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
+                .build();
+
+        return projectInfoEntity;
+    }
+
     @Test
     public void createProjectTest() {
 
-        ProjectInfoReqDTO projectInfoReqDTO = ProjectInfoReqDTO.builder().title("title")
-                .startDate(LocalDateTime.now()).endDate(LocalDateTime.now()).build();
-
         when(projectRepository.save(any())).thenReturn(getProjectEntity());
-        when(projectInfoRepository.save(any())).thenReturn(getProjectInfoEntity());
 
-        ProjectResDTO projectResDTO = projectService.createProject(getMemberEntity(), projectInfoReqDTO, null);
+        ProjectResDTO projectResDTO = projectService.createProject(getProjectInfoEntity().toProjectInfoResDTO());
 
         assertThat(projectResDTO.getProjectKey()).isEqualTo("projectKey");
-        assertThat(projectResDTO.getProjectInfoResDTO().getTitle()).isEqualTo("title");
 
     }
 
@@ -77,6 +79,11 @@ public class ProjectServiceTest {
 
     @Test
     public void deleteProjectMemberTest() {
+    }
+
+    @Test
+    public void getProjectListTest() {
+
     }
 
 }

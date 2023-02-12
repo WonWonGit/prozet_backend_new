@@ -3,7 +3,9 @@ package com.example.prozet.modules.project.domain.dto.response;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.example.prozet.enum_pakage.ProjectMemberType;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
+import com.example.prozet.modules.projectMember.domain.entity.ProjectMemberEntity;
 import com.example.prozet.utils.UtilsClass;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.querydsl.core.types.dsl.DateTemplate;
@@ -26,18 +28,19 @@ public class ProjectListDTO {
     private String startDate;
     // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private String endDate;
-    private String role;
+    private String projectMemberType;
 
-    public ProjectListDTO(Long idx, String projectKey, String title,
+    public ProjectListDTO(Long idx, String projectKey,
+            String title,
             LocalDateTime startDate,
             LocalDateTime endDate,
-            MemberEntity memberEntity) {
+            ProjectMemberType projectMemberType) {
         this.idx = idx;
         this.projectKey = projectKey;
         this.title = title;
         this.startDate = UtilsClass.date(startDate);
         this.endDate = UtilsClass.date(endDate);
-        this.role = memberEntity.getUsername();
+        this.projectMemberType = projectMemberType.projectMemberType();
     }
 
 }

@@ -5,7 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -15,8 +18,6 @@ import com.example.prozet.common.CustomException;
 import com.example.prozet.common.ErrorCode;
 import com.example.prozet.config.QueryDSLConfigTest;
 import com.example.prozet.enum_pakage.StackType;
-import com.example.prozet.modules.project.domain.entity.ProjectEntity;
-import com.example.prozet.modules.project.repository.ProjectRepository;
 import com.example.prozet.modules.stack.domain.dto.response.StackFindResDTO;
 import com.example.prozet.modules.stack.domain.entity.StackCategoryEntity;
 import com.example.prozet.modules.stack.domain.entity.StackEntity;
@@ -26,6 +27,7 @@ import com.example.prozet.modules.stack.repository.StackRepository;
 @DataJpaTest
 @ActiveProfiles("test")
 @Import(QueryDSLConfigTest.class)
+@TestMethodOrder(OrderAnnotation.class)
 public class StackRepsitoryTest {
 
     @Autowired
@@ -34,15 +36,8 @@ public class StackRepsitoryTest {
     @Autowired
     private StackCategoryRepository stackCategoryRepository;
 
-    @Autowired
-    private ProjectRepository projectRepository;
-
     @BeforeEach
     public void stackSave() {
-
-        ProjectEntity projectEntity = ProjectEntity.builder().projectKey("projectKey").build();
-
-        ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
 
         StackCategoryEntity stackCategoryEntity = StackCategoryEntity.builder()
                 .category("BACK END")
@@ -55,8 +50,8 @@ public class StackRepsitoryTest {
         StackEntity stackEntity = StackEntity.builder()
                 .icon("iconUrl")
                 .name("spring")
-                .stackType(StackType.CUSTOMSTACK)
-                .projectEntity(projectEntityPS)
+                .stackType(StackType.DEFAULTSTACK)
+                .projectEntity(null)
                 .stackCategory(stackCategoryEntityPS)
                 .build();
 
@@ -65,6 +60,7 @@ public class StackRepsitoryTest {
     }
 
     @Test
+    @Order(1)
     public void findStackByIdxTest() {
         StackEntity stackEntity = stackRepository.findByIdx(1L)
                 .orElseThrow(() -> new CustomException(ErrorCode.STACK_NOT_EXIST));

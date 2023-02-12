@@ -41,9 +41,9 @@ public class ProjectInfoEntity {
     @OneToOne
     @JoinColumn(name = "file_master_idx", referencedColumnName = "idx")
     private FileMasterEntity fileMasterEntity;
-    @OneToOne(optional = false)
-    @JoinColumn(name = "project_idx", referencedColumnName = "idx")
-    private ProjectEntity projectEntity;
+    // @OneToOne(optional = false)
+    // @JoinColumn(name = "project_idx", referencedColumnName = "idx")
+    // private ProjectEntity projectEntity;
 
     public void saveFileMasterEntity(FileMasterEntity fileMasterEntity) {
         this.fileMasterEntity = fileMasterEntity;

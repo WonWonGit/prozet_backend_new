@@ -48,7 +48,7 @@ public class StackServiceTest {
 
         MemberEntity owner = MemberEntity.builder().username("username").build();
 
-        ProjectEntity projectEntity = ProjectEntity.builder().idx(1L).projectKey("projectKey").owner(owner).build();
+        ProjectEntity projectEntity = ProjectEntity.builder().idx(1L).projectKey("projectKey").build();
 
         StackCategoryEntity stackCategoryEntity = StackCategoryEntity.builder()
                 .category("backend")

@@ -136,11 +136,9 @@ public class ProjectStackControllerTest {
 
         public ProjectEntity getProjectEntity() {
 
-                MemberEntity memberEntity = MemberEntity.builder().username("google_123123").build();
-
                 ProjectEntity projectEntity = ProjectEntity.builder()
                                 .projectKey("projectKey")
-                                .owner(memberEntity)
+                                .deleteYn("N")
                                 .build();
 
                 return projectEntity;

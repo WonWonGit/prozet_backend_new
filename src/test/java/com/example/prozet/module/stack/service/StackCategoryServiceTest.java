@@ -31,14 +31,9 @@ public class StackCategoryServiceTest {
 
     public ProjectEntity getProjectEntity() {
 
-        MemberEntity owner = MemberEntity.builder().username("name").role(Role.USER).build();
-
-        ProjectInfoEntity projectInfo = ProjectInfoEntity.builder().title("title").build();
-
         ProjectEntity projectEntity = ProjectEntity.builder()
                 .projectKey("projectKey")
-                .projectInformation(projectInfo)
-                .owner(owner)
+                .deleteYn("N")
                 .build();
 
         return projectEntity;

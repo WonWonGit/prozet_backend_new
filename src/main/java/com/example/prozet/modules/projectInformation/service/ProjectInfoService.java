@@ -41,7 +41,7 @@ public class ProjectInfoService {
     private FileService fileService;
 
     @Transactional
-    public ProjectInfoResDTO saveProjectInfo(ProjectResDTO projectResDTO, ProjectInfoReqDTO projectInfoReqDTO,
+    public ProjectInfoResDTO saveProjectInfo(ProjectInfoReqDTO projectInfoReqDTO,
             MultipartFile projectImg) {
 
         ProjectInfoEntity projectInfoEntity = projectInfoReqDTO.toEntity();

@@ -19,7 +19,7 @@ public class ProjectResDTO {
     private Long idx;
     private String projectKey;
     private String deleteYn;
-    private MemberResDTO owner;
+    private ProjectMemberResDTO owner;
     private ProjectInfoResDTO projectInfoResDTO;
     private List<ProjectMemberResDTO> projectMemberResDTO;
 
@@ -28,9 +28,9 @@ public class ProjectResDTO {
                 .idx(idx)
                 .projectKey(projectKey)
                 .deleteYn(deleteYn)
-                .owner(owner.toEntity())
+                // .owner(owner.toEntity())
                 .projectInformation(projectInfoResDTO != null ? projectInfoResDTO.toEntity() : null)
-                .ProjectMemberEntity(
+                .projectMemberEntity(
                         projectMemberResDTO != null ? projectMemberResDTO.stream().map(ProjectMemberResDTO::toEntity)
                                 .collect(Collectors.toList()) : null)
                 .build();

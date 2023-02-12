@@ -71,23 +71,12 @@ public class ProjectScheduleRepositoryTest {
 
     public ProjectEntity getProjectEntity() {
 
-        MemberEntity memberEntity = MemberEntity.builder()
-                .name("name")
-                .displayName("suwon")
-                .deleteYn("N")
-                .email("test@gmail.com")
-                .provider(Provider.GOOGLE)
-                .build();
-
-        MemberEntity memberEntityPS = memberRepository.save(memberEntity);
-
         ProjectEntity projectEntity = ProjectEntity.builder()
                 .projectKey("projectKey")
                 .projectInformation(null)
                 .createDate(LocalDateTime.now())
                 .deleteYn("N")
                 .deleteDate(null)
-                .owner(memberEntityPS)
                 .build();
 
         return projectRepository.save(projectEntity);

@@ -15,6 +15,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import com.example.prozet.enum_pakage.Provider;
 import com.example.prozet.enum_pakage.Role;
+import com.example.prozet.modules.member.domain.dto.MemberDTO;
 import com.example.prozet.modules.member.domain.dto.response.MemberResDTO;
 
 import lombok.AllArgsConstructor;
@@ -63,6 +64,18 @@ public class MemberEntity {
     public void updateMember(String email, String name) {
         this.email = email;
         this.name = name;
+    }
+
+    public MemberDTO toMemberDTO() {
+        return MemberDTO.builder()
+                .idx(idx)
+                .username(username)
+                .email(email)
+                .provider(provider)
+                .role(role)
+                .name(name)
+                .displayName(displayName)
+                .build();
     }
 
 }

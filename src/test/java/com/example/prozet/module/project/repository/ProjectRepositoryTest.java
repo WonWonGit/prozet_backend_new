@@ -60,21 +60,21 @@ public class ProjectRepositoryTest {
     @Test
     public void findProjectListTest() {
 
-        ProjectEntity projectEntity = ProjectEntity.builder()
-                .deleteYn("N")
-                .projectKey("projectKey").build();
-
-        ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
-
         ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder()
                 .title("title")
                 .content("content")
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now())
-                .projectEntity(projectEntityPS)
                 .build();
 
-        projectInfoRepository.save(projectInfoEntity);
+        ProjectInfoEntity projectInfoEntityPS = projectInfoRepository.save(projectInfoEntity);
+
+        ProjectEntity projectEntity = ProjectEntity.builder()
+                .deleteYn("N")
+                .projectInformation(projectInfoEntityPS)
+                .projectKey("projectKey").build();
+
+        ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
 
         ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
                 .projectEntity(projectEntityPS)
@@ -84,15 +84,11 @@ public class ProjectRepositoryTest {
                 .state(StateType.ACCEPTED)
                 .build();
 
-        ProjectMemberEntity projectMemberEntityPS = projectMemberRepository.save(projectMemberEntity);
-
-        System.out.println(projectMemberEntityPS + "$$$$");
+        projectMemberRepository.save(projectMemberEntity);
 
         List<ProjectListDTO> results = projectRepository.getProjectList("username");
 
-        System.out.println(results);
-
-        assertThat(results.size()).isEqualTo(0);
+        assertThat(results.get(0).getTitle()).isEqualTo("title");
 
     }
 

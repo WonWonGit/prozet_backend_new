@@ -43,115 +43,114 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ActiveProfiles("test")
 public class StackApiControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+        @Autowired
+        MockMvc mockMvc;
 
-    @MockBean
-    private StackService stackService;
+        @MockBean
+        private StackService stackService;
 
-    @MockBean
-    private ProjectService projectService;
+        @MockBean
+        private ProjectService projectService;
 
-    @MockBean
-    private ProjectStackService projectStackService;
+        @MockBean
+        private ProjectStackService projectStackService;
 
-    @Value("${jwt.access_header_string}")
-    private String accessHeader;
+        @Value("${jwt.access_header_string}")
+        private String accessHeader;
 
-    private static String BEARER = "Bearer ";
+        private static String BEARER = "Bearer ";
 
-    ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
 
-    public String accessToken() throws JsonProcessingException, Exception {
+        public String accessToken() throws JsonProcessingException, Exception {
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("email", "test@google.com");
-        map.put("sub", "123123");
+                Map<String, Object> map = new HashMap<>();
+                map.put("email", "test@google.com");
+                map.put("sub", "123123");
 
-        MvcResult result = mockMvc.perform(post("/login/google")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(map)))
-                .andExpect(status().isOk()).andReturn();
+                MvcResult result = mockMvc.perform(post("/login/google")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(map)))
+                                .andExpect(status().isOk()).andReturn();
 
-        String access = result.getResponse().getHeader(accessHeader);
+                String access = result.getResponse().getHeader(accessHeader);
 
-        return access;
-    }
+                return access;
+        }
 
-    @Test
-    @WithMockUser(username = "google_123123", value = "user")
-    public void saveStackTest() throws Exception {
+        @Test
+        @WithMockUser(username = "google_123123", value = "user")
+        public void saveStackTest() throws Exception {
 
-        StackUnmappedResDTO stackUnmappedResDTO = getStackEntity().toStackUnmappedResDTO();
+                StackUnmappedResDTO stackUnmappedResDTO = getStackEntity().toStackUnmappedResDTO();
 
-        ProjectResDTO projectResDTO = getProjectEntity().toProjectResDTO();
+                ProjectResDTO projectResDTO = getProjectEntity().toProjectResDTO();
 
-        StackReqDTO stackReqDTO = StackReqDTO.builder().iconUrl("iconUrl").StackCategoryIdx(1).name("stack").build();
+                StackReqDTO stackReqDTO = StackReqDTO.builder().iconUrl("iconUrl").StackCategoryIdx(1).name("stack")
+                                .build();
 
-        when(projectService.findByProjectKey(anyString())).thenReturn(projectResDTO);
-        when(stackService.saveStack(any(), any())).thenReturn(stackUnmappedResDTO);
+                when(projectService.findByProjectKey(anyString())).thenReturn(projectResDTO);
+                when(stackService.saveStack(any(), any())).thenReturn(stackUnmappedResDTO);
 
-        MockMultipartFile stackRequest = new MockMultipartFile("stackReqDTO", "", MediaType.APPLICATION_JSON_VALUE,
-                objectMapper.writeValueAsString(stackReqDTO).getBytes());
+                MockMultipartFile stackRequest = new MockMultipartFile("stackReqDTO", "",
+                                MediaType.APPLICATION_JSON_VALUE,
+                                objectMapper.writeValueAsString(stackReqDTO).getBytes());
 
-        mockMvc.perform(multipart("/v1/api/stack/projectKey")
-                .file(stackRequest)
-                .header(accessHeader, BEARER + accessToken())
-                .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().isOk());
+                mockMvc.perform(multipart("/v1/api/stack/projectKey")
+                                .file(stackRequest)
+                                .header(accessHeader, BEARER + accessToken())
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
+                                .andExpect(status().isOk());
 
-    }
+        }
 
-    // ********** Create Model ***********/
+        // ********** Create Model ***********/
 
-    public ProjectEntity getProjectEntity() {
+        public ProjectEntity getProjectEntity() {
 
-        MemberEntity memberEntity = MemberEntity.builder().username("google_123123").build();
+                ProjectEntity projectEntity = ProjectEntity.builder()
+                                .projectKey("projectKey")
+                                .build();
 
-        ProjectEntity projectEntity = ProjectEntity.builder()
-                .projectKey("projectKey")
-                .owner(memberEntity)
-                .build();
+                return projectEntity;
 
-        return projectEntity;
+        }
 
-    }
+        public StackEntity getStackEntity() {
 
-    public StackEntity getStackEntity() {
+                StackCategoryEntity stackCategoryEntity = StackCategoryEntity.builder()
+                                .idx(1)
+                                .category("backend")
+                                .projectEntity(null)
+                                .stackType(StackType.DEFAULTSTACK).build();
 
-        StackCategoryEntity stackCategoryEntity = StackCategoryEntity.builder()
-                .idx(1)
-                .category("backend")
-                .projectEntity(null)
-                .stackType(StackType.DEFAULTSTACK).build();
+                StackEntity stackEntity = StackEntity.builder()
+                                .icon("iconUrl")
+                                .name("stack")
+                                .stackCategory(stackCategoryEntity)
+                                .stackType(StackType.CUSTOMSTACK)
+                                .projectEntity(getProjectEntity())
+                                .build();
 
-        StackEntity stackEntity = StackEntity.builder()
-                .icon("iconUrl")
-                .name("stack")
-                .stackCategory(stackCategoryEntity)
-                .stackType(StackType.CUSTOMSTACK)
-                .projectEntity(getProjectEntity())
-                .build();
+                return stackEntity;
 
-        return stackEntity;
+        }
 
-    }
+        public ProjectStackEntity getProjectStackEntity() {
+                ProjectStackEntity projectStackEntity = ProjectStackEntity.builder()
+                                .stackEntity(getStackEntity())
+                                .checkedYn("Y")
+                                .projectEntity(getProjectEntity())
+                                .build();
 
-    public ProjectStackEntity getProjectStackEntity() {
-        ProjectStackEntity projectStackEntity = ProjectStackEntity.builder()
-                .stackEntity(getStackEntity())
-                .checkedYn("Y")
-                .projectEntity(getProjectEntity())
-                .build();
+                return projectStackEntity;
+        }
 
-        return projectStackEntity;
-    }
-
-    // public ProjectStackResDTO getProjectStackResDTO(){
-    // return ProjectStackResDTO.builder()
-    // .checkedYn("Y")
-    // .projctResDTO(getProjectResDTO())
-    // .stackResDTO(null)
-    // .
-    // }
+        // public ProjectStackResDTO getProjectStackResDTO(){
+        // return ProjectStackResDTO.builder()
+        // .checkedYn("Y")
+        // .projctResDTO(getProjectResDTO())
+        // .stackResDTO(null)
+        // .
+        // }
 }

@@ -85,16 +85,9 @@ public class ProjectStackServiceTest {
         // ********** Create Model ***********/
         public ProjectEntity getProjectEntity() {
 
-                MemberEntity memberEntity = MemberEntity.builder()
-                                .username("username")
-                                .name("name")
-                                .email("email")
-                                .build();
-
                 ProjectEntity projectEntity = ProjectEntity.builder()
                                 .projectKey("projectKey")
                                 .projectInformation(null)
-                                .owner(memberEntity)
                                 .build();
 
                 return projectEntity;

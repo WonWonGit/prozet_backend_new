@@ -1,5 +1,9 @@
 package com.example.prozet.modules.project.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,8 @@ import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectI
 import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectInfoUpdateReqDTO;
 import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
 import com.example.prozet.modules.projectInformation.service.ProjectInfoService;
+import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
+import com.example.prozet.modules.projectMember.service.ProjectMemberService;
 import com.example.prozet.security.auth.PrincipalDetails;
 
 @RestController
@@ -36,6 +42,9 @@ public class ProjectApiController {
     @Autowired
     private ProjectInfoService projectInfoService;
 
+    @Autowired
+    private ProjectMemberService projectMemberService;
+
     @PostMapping
     public ResponseEntity<?> createProject(Authentication authentication,
             @Valid @RequestPart(name = "projectInfo") ProjectInfoReqDTO projectInfoReqDTO,
@@ -45,11 +54,19 @@ public class ProjectApiController {
 
         MemberEntity memberEntity = principalDetails.getMember();
 
-        ProjectResDTO projectResDTO = projectService.createProject(memberEntity, projectInfoReqDTO, projectImg);
+        ProjectInfoResDTO projectInfoResDTO = projectInfoService.saveProjectInfo(projectInfoReqDTO,
+                projectImg);
+
+        ProjectResDTO projectResDTO = projectService.createProject(projectInfoResDTO);
 
         if (projectResDTO == null) {
             return ErrorResponse.toResponseEntity(ErrorCode.CREATE_PROJECT_FAIL);
         }
+
+        ProjectMemberResDTO projectMemberResDTO = projectMemberService.saveProjectOwner(memberEntity.toMemberDTO(),
+                projectResDTO);
+
+        projectResDTO.setOwner(projectMemberResDTO);
 
         return ResponseDTO.toResponseEntity(ResponseEnum.CREATE_PROJECT_SUCCESS, projectResDTO);
 

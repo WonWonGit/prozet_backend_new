@@ -123,7 +123,7 @@ public class ProjectMemberRepositoryTest {
         public void getEditProjectMemberListTest() {
 
                 List<ProjectMemberListResDTO> result = projectMemberRepository.getEditProjectMemberList("projectKey");
-                assertThat(result).isNull();
+                assertThat(result).isNotEmpty();
         }
 
 }

@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.example.prozet.enum_pakage.ScheduleType;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
@@ -40,11 +41,11 @@ public class ProjectScheduleEntity {
     @JoinColumn(name = "PROJECT_MEMBER_IDX", referencedColumnName = "idx")
     private ProjectMemberEntity projectMemberEntity;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "SCHEDULE_IDX", referencedColumnName = "idx")
     private ScheduleEntity scheduleEntity;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "PROJECT_IDX", referencedColumnName = "idx")
     private ProjectEntity projectEntity;
 
