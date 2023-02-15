@@ -35,9 +35,18 @@ public class ProjectService {
 
     public ProjectResDTO findByProjectKey(String projectKey) {
 
-        Optional<ProjectEntity> projectEntity = projectRepository.findByProjectKeyAndDeleteYn(projectKey, "N");
-        if (projectEntity.isPresent()) {
-            return projectEntity.get().toProjectResDTO();
+        // Optional<ProjectEntity> projectEntity =
+        // projectRepository.findByProjectKeyAndDeleteYn(projectKey, "N");
+        // if (projectEntity.isPresent()) {
+        // return projectEntity.get().toProjectResDTO();
+        // } else {
+        // return null;
+        // }
+
+        ProjectResDTO projectResDTO = projectRepository.getProjectByProjectKey(projectKey);
+
+        if (projectResDTO != null) {
+            return projectResDTO;
         } else {
             return null;
         }

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -19,6 +20,7 @@ import com.example.prozet.enum_pakage.StateType;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.member.repository.MemberRepository;
 import com.example.prozet.modules.project.domain.dto.response.ProjectListDTO;
+import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
 import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
@@ -31,79 +33,83 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 @Import(QueryDSLConfigTest.class)
 public class ProjectRepositoryTest {
 
-    @Autowired
-    ProjectRepository projectRepository;
+        @Autowired
+        ProjectRepository projectRepository;
 
-    @Autowired
-    ProjectMemberRepository projectMemberRepository;
+        @Autowired
+        ProjectMemberRepository projectMemberRepository;
 
-    @Autowired
-    ProjectInfoRepository projectInfoRepository;
+        @Autowired
+        ProjectInfoRepository projectInfoRepository;
 
-    @Autowired
-    MemberRepository memberRepository;
+        @Autowired
+        MemberRepository memberRepository;
 
-    @Autowired
-    JPAQueryFactory query;
+        @Autowired
+        JPAQueryFactory query;
 
-    @Test
-    public void projectSaveTest() {
+        @BeforeEach
+        public void projectSaveTest() {
+                ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder()
+                                .title("title")
+                                .content("content")
+                                .startDate(LocalDateTime.now())
+                                .endDate(LocalDateTime.now())
+                                .build();
 
-        ProjectEntity projectEntity = ProjectEntity.builder()
-                .deleteYn("N")
-                .projectKey("projectKey").build();
+                ProjectInfoEntity projectInfoEntityPS = projectInfoRepository.save(projectInfoEntity);
 
-        ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
-        assertThat(projectEntityPS.getProjectKey()).isEqualTo("projectKey");
-    }
+                ProjectEntity projectEntity = ProjectEntity.builder()
+                                .deleteYn("N")
+                                .projectInformation(projectInfoEntityPS)
+                                .projectKey("projectKey").build();
 
-    @Test
-    public void findProjectListTest() {
+                ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
 
-        ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder()
-                .title("title")
-                .content("content")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now())
-                .build();
+                ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
+                                .projectEntity(projectEntityPS)
+                                .memberEntity(getMemberEntity())
+                                .projectMemberType(ProjectMemberType.OWNER)
+                                .access(AccessType.EDIT)
+                                .state(StateType.ACCEPTED)
+                                .deleteYn("N")
+                                .build();
 
-        ProjectInfoEntity projectInfoEntityPS = projectInfoRepository.save(projectInfoEntity);
+                projectMemberRepository.save(projectMemberEntity);
 
-        ProjectEntity projectEntity = ProjectEntity.builder()
-                .deleteYn("N")
-                .projectInformation(projectInfoEntityPS)
-                .projectKey("projectKey").build();
+                assertThat(projectEntityPS.getProjectKey()).isEqualTo("projectKey");
+        }
 
-        ProjectEntity projectEntityPS = projectRepository.save(projectEntity);
+        @Test
+        public void findProjectListTest() {
 
-        ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
-                .projectEntity(projectEntityPS)
-                .memberEntity(getMemberEntity())
-                .projectMemberType(ProjectMemberType.OWNER)
-                .access(AccessType.EDIT)
-                .state(StateType.ACCEPTED)
-                .build();
+                List<ProjectListDTO> results = projectRepository.getProjectList("username");
 
-        projectMemberRepository.save(projectMemberEntity);
+                assertThat(results.get(0).getTitle()).isEqualTo("title");
 
-        List<ProjectListDTO> results = projectRepository.getProjectList("username");
+        }
 
-        assertThat(results.get(0).getTitle()).isEqualTo("title");
+        @Test
+        public void getProjectByProjectKeyTest() {
 
-    }
+                ProjectResDTO projectResDTO = projectRepository.getProjectByProjectKey("projectKey");
 
-    private MemberEntity getMemberEntity() {
-        MemberEntity memberEntity = MemberEntity.builder()
-                .idx(1L)
-                .username("username")
-                .email("test@gmail.com")
-                .provider(Provider.GOOGLE)
-                .displayName("name")
-                .name("name")
-                .role(Role.USER)
-                .build();
+                System.out.println(projectResDTO + "####");
+        }
 
-        return memberRepository.save(memberEntity);
-    }
+        private MemberEntity getMemberEntity() {
+                MemberEntity memberEntity = MemberEntity.builder()
+                                .idx(1L)
+                                .username("username")
+                                .email("test@gmail.com")
+                                .provider(Provider.GOOGLE)
+                                .displayName("name")
+                                .name("name")
+                                .role(Role.USER)
+                                .deleteYn("N")
+                                .build();
+
+                return memberRepository.save(memberEntity);
+        }
 
 }

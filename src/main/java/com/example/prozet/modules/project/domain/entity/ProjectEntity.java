@@ -60,7 +60,7 @@ public class ProjectEntity {
     // @JoinColumn(name = "member_idx", referencedColumnName = "idx")
     // private MemberEntity owner;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "projectInfo_idx", referencedColumnName = "idx")
     private ProjectInfoEntity projectInformation;
 

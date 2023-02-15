@@ -6,12 +6,16 @@ import static com.example.prozet.modules.projectInformation.domain.entity.QProje
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import com.example.prozet.enum_pakage.ProjectMemberType;
 import com.example.prozet.modules.project.domain.dto.response.ProjectListDTO;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
+import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 import com.example.prozet.modules.projectMember.domain.entity.ProjectMemberEntity;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
@@ -48,8 +52,35 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 
     @Override
     public ProjectResDTO getProjectByProjectKey(String projectKey) {
-        // TODO Auto-generated method stub
-        return null;
+
+        ProjectResDTO result = query.select(Projections.constructor(
+                ProjectResDTO.class,
+                projectEntity.idx,
+                projectEntity.projectKey,
+                projectEntity.deleteYn,
+                projectEntity.projectInformation)).from(projectEntity)
+                .fetchFirst();
+
+        List<ProjectMemberResDTO> projectMembers = query.select(Projections.constructor(ProjectMemberResDTO.class,
+                projectMemberEntity.idx,
+                projectMemberEntity.access,
+                projectMemberEntity.state,
+                projectMemberEntity.deleteYn,
+                projectMemberEntity.memberEntity,
+                projectMemberEntity.projectMemberType))
+                .from(projectMemberEntity)
+                .where(projectMemberEntity.projectEntity.projectKey.eq(projectKey)
+                        .and(projectMemberEntity.deleteYn.eq("N")))
+                .fetch();
+
+        result.setProjectMemberResDTO(projectMembers);
+
+        Optional<ProjectMemberResDTO> owner = projectMembers.stream().filter(
+                member -> member.getProjectMemberType().equals(ProjectMemberType.OWNER)).findFirst();
+
+        result.setOwner(owner.get());
+
+        return result;
     }
 
 }
