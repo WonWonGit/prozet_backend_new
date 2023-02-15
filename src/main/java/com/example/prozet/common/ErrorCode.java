@@ -41,6 +41,7 @@ public enum ErrorCode {
     FIND_PROJECT_INFO_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "ECPI00", "Fail find project information"),
     PROJECT_INFO_EXIST(HttpStatus.BAD_GATEWAY, "ECPI01", "Project Info Already Exist"),
     PROJECT_INFO_UPDATE_FAIL(HttpStatus.BAD_GATEWAY, "ECPI02", "Fail update project information"),
+    PROJECT_INFO_UPDATE_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "ECPI00", "Project owner only or access type edit only"),
 
     FAIL_MEMBER_INVITE(HttpStatus.BAD_REQUEST, "ECPM000", "Fail invite member"),
     FAIL_MEMBER_ACCESS_EDIT(HttpStatus.BAD_REQUEST, "ECPM001", "Fail update member access"),

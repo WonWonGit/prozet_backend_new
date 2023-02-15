@@ -4,6 +4,7 @@ import com.example.prozet.enum_pakage.AccessType;
 import com.example.prozet.enum_pakage.ProjectMemberType;
 import com.example.prozet.enum_pakage.StateType;
 import com.example.prozet.modules.member.domain.dto.response.MemberResDTO;
+import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.projectMember.domain.entity.ProjectMemberEntity;
 
@@ -36,6 +37,16 @@ public class ProjectMemberResDTO {
                 .projectEntity(projectResDTO.toEntity())
                 .projectMemberType(projectMemberType)
                 .build();
+    }
+
+    public ProjectMemberResDTO(Long idx, AccessType access, StateType state, String deleteYn, MemberEntity memberEntity,
+            ProjectMemberType projectMemberType) {
+        this.idx = idx;
+        this.access = access;
+        this.state = state;
+        this.deleteYn = deleteYn;
+        this.memberResDTO = memberEntity.toMemberResDto();
+        this.projectMemberType = projectMemberType;
     }
 
 }

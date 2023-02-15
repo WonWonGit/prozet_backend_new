@@ -68,7 +68,8 @@ public class ProjectMemberEntity {
                 .access(access)
                 .state(state)
                 .memberResDTO(memberEntity != null ? memberEntity.toMemberResDto() : null)
-                .projectResDTO(projectEntity != null ? projectEntity.toProjectResDTO() : null)
+                // .projectResDTO(projectEntity != null ? projectEntity.toProjectResDTO() :
+                // null)
                 .deleteYn(deleteYn)
                 .projectMemberType(projectMemberType)
                 .build();

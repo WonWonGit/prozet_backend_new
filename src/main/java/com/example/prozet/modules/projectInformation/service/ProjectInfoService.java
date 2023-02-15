@@ -1,7 +1,5 @@
 package com.example.prozet.modules.projectInformation.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,11 +7,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.prozet.common.CustomException;
 import com.example.prozet.common.ErrorCode;
-import com.example.prozet.enum_pakage.AccessType;
 import com.example.prozet.enum_pakage.FileType;
 import com.example.prozet.modules.file.domain.dto.response.FileMasterDTO;
 import com.example.prozet.modules.file.service.FileService;
-import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
 import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectInfoReqDTO;
@@ -21,7 +17,6 @@ import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectI
 import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
 import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
 import com.example.prozet.modules.projectInformation.repository.ProjectInfoRepository;
-import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberListResDTO;
 import com.example.prozet.modules.projectMember.repository.ProjectMemberRepository;
 
 @Service
@@ -61,22 +56,8 @@ public class ProjectInfoService {
     public ProjectInfoResDTO updateProjectInfo(String projectKey, String username,
             ProjectInfoUpdateReqDTO projectInfoUpdateReqDTO, MultipartFile projectImg) {
 
-        boolean projectMember = false;
-
         ProjectEntity projectEntity = projectRepository.findByProjectKeyAndDeleteYn(projectKey, "N")
                 .orElseThrow(() -> new CustomException(ErrorCode.FIND_PROJECT_INFO_FAIL));
-
-        List<ProjectMemberListResDTO> projectMemberList = projectMemberRepository.getEditProjectMemberList(projectKey);
-
-        if (projectMemberList != null) {
-            projectMember = projectMemberList.stream().anyMatch(
-                    member -> member.getUsername().equals(username));
-        }
-
-        // if (!projectEntity.getOwner().getUsername().equals(username) ||
-        // projectMember) {
-        // return null;
-        // }
 
         ProjectInfoEntity projectInfoEntity = projectEntity.getProjectInformation();
 
