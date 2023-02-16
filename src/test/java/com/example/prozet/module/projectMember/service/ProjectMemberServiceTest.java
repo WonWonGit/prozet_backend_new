@@ -28,6 +28,7 @@ import com.example.prozet.modules.email.service.EmailService;
 import com.example.prozet.modules.member.domain.dto.MemberDTO;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.member.repository.MemberRepository;
+import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
 import com.example.prozet.modules.projectInformation.domain.entity.ProjectInfoEntity;
@@ -89,8 +90,6 @@ public class ProjectMemberServiceTest {
         @Test
         public void saveProjectMemberTest() {
 
-                // MemberEntity owner = MemberEntity.builder().username("owner").build();
-
                 ProjectEntity projectEntity = ProjectEntity.builder()
                                 .deleteYn("N").projectKey("projectKey123")
                                 .build();
@@ -124,25 +123,9 @@ public class ProjectMemberServiceTest {
         @Test
         public void editProjectMemberStateTest() {
 
-                ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().idx(1L).build();
-
-                ProjectEntity projectEntity = ProjectEntity.builder().idx(1L).deleteYn("N").projectKey("projectKey123")
-                                // .owner(owner)
-                                // .projectInformation(projectInfoEntity)
-                                .build();
-
-                MemberEntity inviteMember = MemberEntity.builder().idx(2L).username("inviteMember").build();
-
-                ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
-                                .access(AccessType.READONLY)
-                                .deleteYn("N")
-                                .state(StateType.PENDING)
-                                .memberEntity(inviteMember)
-                                .projectEntity(projectEntity)
-                                .build();
 
                 when(projectMemberRepository.getInvitedMember(any(), any()))
-                                .thenReturn(projectMemberEntity.toProjectMemberResDTO());
+                                .thenReturn(getProjectMemberResDTO());
 
                 boolean result = projectMemberService.editProjectMemberState("inviteMember", "projectKey123");
 
@@ -153,28 +136,9 @@ public class ProjectMemberServiceTest {
         @Test
         public void editProjectMemberAccessTest() {
 
-                MemberEntity owner = MemberEntity.builder().idx(1L).username("owner").build();
-
-                ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().idx(1L).build();
-
-                ProjectEntity projectEntity = ProjectEntity.builder().idx(1L).deleteYn("N").projectKey("projectKey123")
-                                // .owner(owner)
-                                .projectInformation(projectInfoEntity)
-                                .build();
-
-                MemberEntity inviteMember = MemberEntity.builder().idx(2L).username("inviteMember").build();
-
-                ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
-                                .idx(1L)
-                                .access(AccessType.READONLY)
-                                .deleteYn("N")
-                                .state(StateType.PENDING)
-                                .memberEntity(inviteMember)
-                                .projectEntity(projectEntity)
-                                .build();
-
                 when(projectMemberRepository.getProjectMember(anyLong()))
-                                .thenReturn(Optional.of(projectMemberEntity.toProjectMemberResDTO()));
+                                .thenReturn(Optional.of(getProjectMemberResDTO()));
+
                 ProjectMemberResDTO projectMemberResDTO = projectMemberService.editProjectMemberAccess(1L,
                                 AccessType.EDIT, "owner");
 
@@ -185,28 +149,8 @@ public class ProjectMemberServiceTest {
         @Test
         public void deleteProjectMemberTest() {
 
-                MemberEntity owner = MemberEntity.builder().idx(1L).username("owner").build();
-
-                ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().idx(1L).build();
-
-                ProjectEntity projectEntity = ProjectEntity.builder().idx(1L).deleteYn("N").projectKey("projectKey123")
-                                // .owner(owner)
-                                .projectInformation(projectInfoEntity)
-                                .build();
-
-                MemberEntity inviteMember = MemberEntity.builder().idx(2L).username("inviteMember").build();
-
-                ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
-                                .idx(1L)
-                                .access(AccessType.READONLY)
-                                .deleteYn("N")
-                                .state(StateType.PENDING)
-                                .memberEntity(inviteMember)
-                                .projectEntity(projectEntity)
-                                .build();
-
                 when(projectMemberRepository.getProjectMember(anyLong()))
-                                .thenReturn(Optional.of(projectMemberEntity.toProjectMemberResDTO()));
+                                .thenReturn(Optional.of(getProjectMemberResDTO()));
 
                 ProjectMemberResDTO projectMemberResDTO = projectMemberService.deleteProjectMember(1L);
 
@@ -274,6 +218,29 @@ public class ProjectMemberServiceTest {
                                 .build();
 
                 return projectEntity;
+
+        }
+
+        public ProjectMemberResDTO getProjectMemberResDTO() {
+
+                ProjectInfoEntity projectInfoEntity = ProjectInfoEntity.builder().idx(1L).build();
+
+                ProjectEntity projectEntity = ProjectEntity.builder().idx(1L).deleteYn("N").projectKey("projectKey123")
+                                .projectInformation(projectInfoEntity)
+                                .build();
+
+                MemberEntity inviteMember = MemberEntity.builder().idx(2L).username("inviteMember").build();
+
+                ProjectMemberResDTO projectMemberResDTO = ProjectMemberResDTO.builder()
+                                .idx(1L)
+                                .access(AccessType.READONLY)
+                                .deleteYn("N")
+                                .state(StateType.PENDING)
+                                .memberResDTO(inviteMember.toMemberResDto())
+                                .projectResDTO(projectEntity.toProjectResDTO())
+                                .build();
+
+                return projectMemberResDTO;
 
         }
 

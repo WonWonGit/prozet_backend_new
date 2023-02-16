@@ -21,6 +21,7 @@ import com.example.prozet.modules.member.repository.MemberRepository;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
+import com.example.prozet.modules.project.service.ProjectService;
 import com.example.prozet.modules.project.utils.ProjectUtil;
 import com.example.prozet.modules.projectMember.domain.dto.request.ProjectMemberReqDTO;
 import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberFindResDTO;
@@ -150,11 +151,13 @@ public class ProjectMemberService {
         ProjectMemberResDTO memberResDTO = projectMemberRepository.getProjectMember(idx)
                 .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_MEMBER_NOT_EXIST));
 
-        boolean isOwner = ProjectUtil.projectOwnerCheck(memberResDTO, username);
+        // String projectKey = memberResDTO.getProjectResDTO().getProjectKey();
 
-        if (!isOwner) {
-            throw new CustomException(ErrorCode.PROJECT_OWNER_ONLY);
-        }
+        // boolean isOwner = ProjectUtil.projectOwnerCheck(memberResDTO, username);
+
+        // if (!isOwner) {
+        // throw new CustomException(ErrorCode.PROJECT_OWNER_ONLY);
+        // }
 
         ProjectMemberEntity projectMemberEntity = memberResDTO.toEntity();
         projectMemberEntity.editMemberAccess(accessType);
