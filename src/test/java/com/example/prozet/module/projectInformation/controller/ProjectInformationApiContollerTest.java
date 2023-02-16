@@ -1,10 +1,13 @@
 package com.example.prozet.module.projectInformation.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -22,11 +26,22 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.example.prozet.enum_pakage.AccessType;
+import com.example.prozet.enum_pakage.ProjectMemberType;
+import com.example.prozet.modules.member.domain.dto.response.MemberResDTO;
 import com.example.prozet.modules.member.repository.MemberRepository;
+import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
+import com.example.prozet.modules.project.domain.entity.ProjectEntity;
+import com.example.prozet.modules.project.service.ProjectService;
 import com.example.prozet.modules.projectInformation.domain.dto.request.ProjectInfoUpdateReqDTO;
+import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
+import com.example.prozet.modules.projectInformation.service.ProjectInfoService;
+import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,6 +50,12 @@ public class ProjectInformationApiContollerTest {
 
         @Autowired
         MockMvc mockMvc;
+
+        @MockBean
+        private ProjectInfoService projectInfoService;
+
+        @MockBean
+        private ProjectService projectService;
 
         @Autowired
         MemberRepository memberRepository;
@@ -85,12 +106,54 @@ public class ProjectInformationApiContollerTest {
                                                 .writeValueAsString(projectInfoUpdateReqDTO)
                                                 .getBytes());
 
+                when(projectService.findByProjectKey(anyString())).thenReturn(getProjectResDTO());
+                when(projectInfoService.updateProjectInfo(anyString(), anyString(), any(), any()))
+                                .thenReturn(getProjectInfoResDTO());
+
                 mockMvc.perform(MockMvcRequestBuilders
-                                .multipart(HttpMethod.PUT, url + "/information/" + UUID.randomUUID().toString())
+                                .multipart(HttpMethod.PUT,
+                                                url + "/information/" + UUID.randomUUID().toString())
                                 .file(projectInfoReqeust)
                                 .header(accessHeader, BEARER + accessToken())
                                 .contentType(MediaType.MULTIPART_FORM_DATA))
-                                .andExpect(status().isInternalServerError());
+                                .andExpect(status().isOk());
+
+        }
+
+        public ProjectInfoResDTO getProjectInfoResDTO() {
+
+                ProjectInfoResDTO projectInfoResDTO = ProjectInfoResDTO.builder()
+                                .content("content")
+                                .title("title")
+                                .build();
+
+                return projectInfoResDTO;
+        }
+
+        public ProjectResDTO getProjectResDTO() {
+
+                MemberResDTO memberResDTO = MemberResDTO.builder()
+                                .username("google_123123")
+                                .build();
+
+                ProjectMemberResDTO owner = ProjectMemberResDTO
+                                .builder()
+                                .access(AccessType.EDIT)
+                                .deleteYn("N")
+                                .projectMemberType(ProjectMemberType.OWNER)
+                                .memberResDTO(memberResDTO)
+                                .build();
+
+                ProjectResDTO projectResDTO = ProjectResDTO.builder()
+                                .idx(1L)
+                                .projectKey("projectKey")
+                                .deleteYn("N")
+                                .projectInfoResDTO(getProjectInfoResDTO())
+                                .projectMemberResDTO(List.of(owner))
+                                .owner(owner)
+                                .build();
+
+                return projectResDTO;
 
         }
 
