@@ -106,7 +106,6 @@ public class ProjectInfoServiceTest {
 
                 when(projectRepository.findByProjectKeyAndDeleteYn(any(), any()))
                                 .thenReturn(Optional.of(projectEntity));
-                when(projectMemberRepository.getEditProjectMemberList(any())).thenReturn(null);
 
                 ProjectInfoResDTO projectInfoResDTO = projectInfoService.updateProjectInfo("projectKey", "username",
                                 projectInfoUpdateReqDTO, null);
