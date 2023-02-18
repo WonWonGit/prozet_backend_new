@@ -47,6 +47,7 @@ public enum ErrorCode {
     FAIL_MEMBER_ACCESS_EDIT(HttpStatus.BAD_REQUEST, "ECPM001", "Fail update member access"),
     PROJECT_INVITATION_EXPIRED(HttpStatus.UNAUTHORIZED, "ECPM000", "Invitation is expired"),
     PROJECT_MEMBER_NOT_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "ECPM000", "Project member is not exist"),
+    PROJECT_MEMBER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "ECPM001", "Only project owner edit member"),
 
     STACK_CATEGORY_NOT_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "ECS000", "Stack category is not exist"),
     SAVE_STACK_FAIL(HttpStatus.BAD_REQUEST, "ECS000", "Faile save stack"),

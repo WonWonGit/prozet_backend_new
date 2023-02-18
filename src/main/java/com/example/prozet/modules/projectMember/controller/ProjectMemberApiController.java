@@ -17,6 +17,9 @@ import com.example.prozet.common.ErrorResponse;
 import com.example.prozet.common.ResponseDTO;
 import com.example.prozet.common.ResponseEnum;
 import com.example.prozet.enum_pakage.AccessType;
+import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
+import com.example.prozet.modules.project.service.ProjectService;
+import com.example.prozet.modules.project.utils.ProjectUtil;
 import com.example.prozet.modules.projectMember.domain.dto.request.ProjectMemberReqDTO;
 import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 import com.example.prozet.modules.projectMember.service.ProjectMemberService;
@@ -28,6 +31,9 @@ public class ProjectMemberApiController {
 
     @Autowired
     private ProjectMemberService projectMemberService;
+
+    @Autowired
+    private ProjectService projectService;
 
     @PostMapping
     public ResponseEntity<?> saveProjectMember(
@@ -50,20 +56,33 @@ public class ProjectMemberApiController {
     @PutMapping(value = "/{idx}")
     public ResponseEntity<?> editProjectMemberAccess(
             @PathVariable Long idx,
-            AccessType accessType,
+            @RequestBody @Valid ProjectMemberReqDTO projectMemberReqDTO,
             Authentication authentication) {
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
-        ProjectMemberResDTO projectMemberResDTO = projectMemberService.editProjectMemberAccess(idx, accessType,
-                principalDetails.getUsername());
+        String username = principalDetails.getUsername();
 
-        if (projectMemberResDTO != null) {
+        String projectKey = projectMemberReqDTO.getProjectKey();
 
-            return ResponseDTO.toResponseEntity(ResponseEnum.UPDATE_MEMBER_ACCESS_SUCCESS, projectMemberResDTO);
+        ProjectResDTO projectResDTO = projectService.findByProjectKey(projectKey);
+
+        boolean owner = ProjectUtil.projectOwnerCheck(projectResDTO.getOwner(), username);
+
+        if (!owner) {
+            return ErrorResponse.toResponseEntity(ErrorCode.PROJECT_MEMBER_UNAUTHORIZED);
         }
 
-        return ErrorResponse.toResponseEntity(ErrorCode.PROJECT_INFO_UPDATE_FAIL);
+        ProjectMemberResDTO editedProjectMemberResDTO = projectMemberService.editProjectMemberAccess(idx,
+                projectMemberReqDTO.getAccess(),
+                username);
+
+        if (editedProjectMemberResDTO == null) {
+            return ErrorResponse.toResponseEntity(ErrorCode.PROJECT_INFO_UPDATE_FAIL);
+        }
+
+        return ResponseDTO.toResponseEntity(ResponseEnum.UPDATE_MEMBER_ACCESS_SUCCESS, editedProjectMemberResDTO);
+
     }
 
     @PutMapping(value = "/delete/{idx}")
