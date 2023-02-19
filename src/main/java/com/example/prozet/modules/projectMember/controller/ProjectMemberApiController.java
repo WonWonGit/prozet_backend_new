@@ -20,13 +20,14 @@ import com.example.prozet.enum_pakage.AccessType;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.service.ProjectService;
 import com.example.prozet.modules.project.utils.ProjectUtil;
+import com.example.prozet.modules.projectMember.domain.dto.request.ProjectMemberEditReqDTO;
 import com.example.prozet.modules.projectMember.domain.dto.request.ProjectMemberReqDTO;
 import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 import com.example.prozet.modules.projectMember.service.ProjectMemberService;
 import com.example.prozet.security.auth.PrincipalDetails;
 
 @RestController
-@RequestMapping("v1/api/project/member")
+@RequestMapping("v1/api/projectmember")
 public class ProjectMemberApiController {
 
     @Autowired
@@ -56,14 +57,14 @@ public class ProjectMemberApiController {
     @PutMapping(value = "/{idx}")
     public ResponseEntity<?> editProjectMemberAccess(
             @PathVariable Long idx,
-            @RequestBody @Valid ProjectMemberReqDTO projectMemberReqDTO,
+            @RequestBody @Valid ProjectMemberEditReqDTO projectMemberEditReqDTO,
             Authentication authentication) {
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
         String username = principalDetails.getUsername();
 
-        String projectKey = projectMemberReqDTO.getProjectKey();
+        String projectKey = projectMemberEditReqDTO.getProjectKey();
 
         ProjectResDTO projectResDTO = projectService.findByProjectKey(projectKey);
 
@@ -74,7 +75,7 @@ public class ProjectMemberApiController {
         }
 
         ProjectMemberResDTO editedProjectMemberResDTO = projectMemberService.editProjectMemberAccess(idx,
-                projectMemberReqDTO.getAccess(),
+                projectMemberEditReqDTO.getAccessType(),
                 username);
 
         if (editedProjectMemberResDTO == null) {
