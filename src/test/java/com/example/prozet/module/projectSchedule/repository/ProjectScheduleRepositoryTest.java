@@ -11,12 +11,15 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.example.prozet.config.QueryDSLConfigTest;
+import com.example.prozet.enum_pakage.AccessType;
+import com.example.prozet.enum_pakage.ProjectMemberType;
 import com.example.prozet.enum_pakage.Provider;
 import com.example.prozet.enum_pakage.ScheduleType;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.member.repository.MemberRepository;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.repository.ProjectRepository;
+import com.example.prozet.modules.projectMember.domain.entity.ProjectMemberEntity;
 import com.example.prozet.modules.projectSchedule.domain.entity.ProjectScheduleEntity;
 import com.example.prozet.modules.projectSchedule.repository.ProjectScheduleRepository;
 import com.example.prozet.modules.schedule.domain.entity.ScheduleEntity;
@@ -36,15 +39,12 @@ public class ProjectScheduleRepositoryTest {
     @Autowired
     private ProjectRepository projectRepository;
 
-    @Autowired
-    private MemberRepository memberRepository;
-
     @Test
     public void saveProjectScheduleTest() {
 
         ProjectScheduleEntity projectScheduleEntity = ProjectScheduleEntity.builder()
                 .projectEntity(getProjectEntity())
-                .projectMemberEntity(null)
+                .projectMemberEntity(getProjectMemberEntity())
                 .scheduleEntity(getShcheduleEntity())
                 .scheduleType(ScheduleType.COMPLETED)
                 .build();
@@ -67,6 +67,26 @@ public class ProjectScheduleRepositoryTest {
 
         return scheduleRepository.save(scheduleEntity);
 
+    }
+
+    public ProjectMemberEntity getProjectMemberEntity() {
+
+        MemberEntity owner = MemberEntity.builder()
+                .username("google_1212")
+                .name("name")
+                .email("test@google.com")
+                .provider(Provider.GOOGLE)
+                .displayName("test")
+                .build();
+
+        ProjectMemberEntity projectMemberEntity = ProjectMemberEntity.builder()
+                .access(AccessType.EDIT)
+                .projectEntity(null)
+                .projectMemberType(ProjectMemberType.OWNER)
+                .memberEntity(owner)
+                .build();
+
+        return projectMemberEntity;
     }
 
     public ProjectEntity getProjectEntity() {

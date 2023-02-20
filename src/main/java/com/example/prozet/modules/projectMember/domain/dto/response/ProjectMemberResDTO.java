@@ -34,7 +34,7 @@ public class ProjectMemberResDTO {
                 .state(state)
                 .deleteYn(deleteYn)
                 .memberEntity(memberResDTO.toEntity())
-                .projectEntity(projectResDTO.toEntity())
+                .projectEntity(projectResDTO != null ? projectResDTO.toEntity() : null)
                 .projectMemberType(projectMemberType)
                 .build();
     }

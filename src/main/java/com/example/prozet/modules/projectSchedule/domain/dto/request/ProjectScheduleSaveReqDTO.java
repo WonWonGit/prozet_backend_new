@@ -6,12 +6,14 @@ import com.example.prozet.enum_pakage.ScheduleType;
 import com.example.prozet.modules.schedule.domain.dto.request.ScheduleReqDTO;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ProjectScheduleSaveReqDTO {
 
     private ScheduleReqDTO scheduleReqDTO;
