@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -23,11 +24,16 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.example.prozet.enum_pakage.AccessType;
+import com.example.prozet.enum_pakage.ProjectMemberType;
 import com.example.prozet.enum_pakage.StackType;
+import com.example.prozet.modules.member.domain.dto.response.MemberResDTO;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.service.ProjectService;
+import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
+import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 import com.example.prozet.modules.projectStack.domain.entity.ProjectStackEntity;
 import com.example.prozet.modules.projectStack.service.ProjectStackService;
 import com.example.prozet.modules.stack.domain.dto.request.StackReqDTO;
@@ -84,7 +90,7 @@ public class StackApiControllerTest {
 
                 StackUnmappedResDTO stackUnmappedResDTO = getStackEntity().toStackUnmappedResDTO();
 
-                ProjectResDTO projectResDTO = getProjectEntity().toProjectResDTO();
+                ProjectResDTO projectResDTO = getProjectResDTO();
 
                 StackReqDTO stackReqDTO = StackReqDTO.builder().iconUrl("iconUrl").StackCategoryIdx(1).name("stack")
                                 .build();
@@ -136,21 +142,40 @@ public class StackApiControllerTest {
 
         }
 
-        public ProjectStackEntity getProjectStackEntity() {
-                ProjectStackEntity projectStackEntity = ProjectStackEntity.builder()
-                                .stackEntity(getStackEntity())
-                                .checkedYn("Y")
-                                .projectEntity(getProjectEntity())
+        public ProjectInfoResDTO getProjectInfoResDTO() {
+
+                ProjectInfoResDTO projectInfoResDTO = ProjectInfoResDTO.builder()
+                                .content("content")
+                                .title("title")
                                 .build();
 
-                return projectStackEntity;
+                return projectInfoResDTO;
         }
 
-        // public ProjectStackResDTO getProjectStackResDTO(){
-        // return ProjectStackResDTO.builder()
-        // .checkedYn("Y")
-        // .projctResDTO(getProjectResDTO())
-        // .stackResDTO(null)
-        // .
-        // }
+        public ProjectResDTO getProjectResDTO() {
+
+                MemberResDTO memberResDTO = MemberResDTO.builder()
+                                .username("google_123123")
+                                .build();
+
+                ProjectMemberResDTO owner = ProjectMemberResDTO
+                                .builder()
+                                .access(AccessType.EDIT)
+                                .deleteYn("N")
+                                .projectMemberType(ProjectMemberType.OWNER)
+                                .memberResDTO(memberResDTO)
+                                .build();
+
+                ProjectResDTO projectResDTO = ProjectResDTO.builder()
+                                .idx(1L)
+                                .projectKey("projectKey")
+                                .deleteYn("N")
+                                .projectInfoResDTO(getProjectInfoResDTO())
+                                .projectMemberResDTO(List.of(owner))
+                                .owner(owner)
+                                .build();
+
+                return projectResDTO;
+
+        }
 }

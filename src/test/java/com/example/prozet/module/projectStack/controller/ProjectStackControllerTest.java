@@ -1,5 +1,6 @@
 package com.example.prozet.module.projectStack.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,11 +29,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import com.example.prozet.enum_pakage.AccessType;
+import com.example.prozet.enum_pakage.ProjectMemberType;
 import com.example.prozet.enum_pakage.StackType;
+import com.example.prozet.modules.member.domain.dto.response.MemberResDTO;
 import com.example.prozet.modules.member.domain.entity.MemberEntity;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.project.service.ProjectService;
+import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
+import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 import com.example.prozet.modules.projectStack.domain.entity.ProjectStackEntity;
 import com.example.prozet.modules.projectStack.service.ProjectStackService;
 import com.example.prozet.modules.stack.domain.dto.response.StackUnmappedResDTO;
@@ -87,7 +93,7 @@ public class ProjectStackControllerTest {
     public void saveProjectStackTest() throws JsonProcessingException, Exception {
 
         when(stackService.findByIdx(anyLong())).thenReturn(getStackEntity().toStackResDTO());
-        when(projectService.findByProjectKey(any())).thenReturn(getProjectEntity().toProjectResDTO());
+        when(projectService.findByProjectKey(any())).thenReturn(getProjectResDTO());
         when(projectStackService.saveProjectStack(any(), any())).thenReturn(getProjectStackEntity().toProjectStackUnmmapedResDTO());
 
         List<Long> stackIdxList = new ArrayList<>();
@@ -107,13 +113,11 @@ public class ProjectStackControllerTest {
         @WithMockUser(username = "google_123123", value = "user")
         public void editProjectStackTest() throws Exception {
 
-                ProjectResDTO projectResDTO = getProjectEntity().toProjectResDTO();
-
                 JSONArray stackIdxList = new JSONArray();
                 stackIdxList.put(1L);
                 stackIdxList.put(2L);
 
-                when(projectService.findByProjectKey(anyString())).thenReturn(projectResDTO);
+                when(projectService.findByProjectKey(anyString())).thenReturn(getProjectResDTO());
                 when(projectStackService.findProjectStack(anyLong(), any()))
                                 .thenReturn(getProjectStackEntity().toProjectStackResDTO());
 
@@ -173,6 +177,43 @@ public class ProjectStackControllerTest {
                                 .build();
 
                 return projectStackEntity;
+        }
+
+        public ProjectInfoResDTO getProjectInfoResDTO() {
+
+                ProjectInfoResDTO projectInfoResDTO = ProjectInfoResDTO.builder()
+                                .content("content")
+                                .title("title")
+                                .build();
+
+                return projectInfoResDTO;
+        }
+
+        public ProjectResDTO getProjectResDTO() {
+
+                MemberResDTO memberResDTO = MemberResDTO.builder()
+                                .username("google_123123")
+                                .build();
+
+                ProjectMemberResDTO owner = ProjectMemberResDTO
+                                .builder()
+                                .access(AccessType.EDIT)
+                                .deleteYn("N")
+                                .projectMemberType(ProjectMemberType.OWNER)
+                                .memberResDTO(memberResDTO)
+                                .build();
+
+                ProjectResDTO projectResDTO = ProjectResDTO.builder()
+                                .idx(1L)
+                                .projectKey("projectKey")
+                                .deleteYn("N")
+                                .projectInfoResDTO(getProjectInfoResDTO())
+                                .projectMemberResDTO(List.of(owner))
+                                .owner(owner)
+                                .build();
+
+                return projectResDTO;
+
         }
 
 }

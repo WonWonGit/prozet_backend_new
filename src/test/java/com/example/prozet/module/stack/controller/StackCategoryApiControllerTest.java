@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -21,11 +22,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.example.prozet.enum_pakage.AccessType;
+import com.example.prozet.enum_pakage.ProjectMemberType;
 import com.example.prozet.enum_pakage.StackType;
 import com.example.prozet.modules.member.domain.dto.response.MemberResDTO;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.service.ProjectService;
 import com.example.prozet.modules.projectInformation.domain.dto.response.ProjectInfoResDTO;
+import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 import com.example.prozet.modules.stack.domain.dto.response.StackCategoryResDTO;
 import com.example.prozet.modules.stack.service.StackCategoryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -72,14 +76,7 @@ public class StackCategoryApiControllerTest {
         @WithMockUser(username = "google_123123", value = "user")
         public void saveStackCategoryTest() throws JsonProcessingException, Exception {
 
-                ProjectInfoResDTO projectInfoResDTO = ProjectInfoResDTO.builder()
-                                .title("projectTitle")
-                                .build();
-
-                ProjectResDTO projectResDTO = ProjectResDTO.builder()
-                                .projectInfoResDTO(projectInfoResDTO)
-                                .projectKey("projectKey")
-                                .build();
+                ProjectResDTO projectResDTO = getProjectResDTO();
 
                 StackCategoryResDTO stackCategoryResDTO = StackCategoryResDTO.builder().category("category")
                                 .projectResDTO(projectResDTO).stackType(StackType.CUSTOMSTACK).build();
@@ -93,6 +90,43 @@ public class StackCategoryApiControllerTest {
                                 .header(accessHeader, BEARER + accessToken())
                                 .content(stackCategory))
                                 .andExpect(status().isOk());
+
+        }
+
+        public ProjectInfoResDTO getProjectInfoResDTO() {
+
+                ProjectInfoResDTO projectInfoResDTO = ProjectInfoResDTO.builder()
+                                .content("content")
+                                .title("title")
+                                .build();
+
+                return projectInfoResDTO;
+        }
+
+        public ProjectResDTO getProjectResDTO() {
+
+                MemberResDTO memberResDTO = MemberResDTO.builder()
+                                .username("google_123123")
+                                .build();
+
+                ProjectMemberResDTO owner = ProjectMemberResDTO
+                                .builder()
+                                .access(AccessType.EDIT)
+                                .deleteYn("N")
+                                .projectMemberType(ProjectMemberType.OWNER)
+                                .memberResDTO(memberResDTO)
+                                .build();
+
+                ProjectResDTO projectResDTO = ProjectResDTO.builder()
+                                .idx(1L)
+                                .projectKey("projectKey")
+                                .deleteYn("N")
+                                .projectInfoResDTO(getProjectInfoResDTO())
+                                .projectMemberResDTO(List.of(owner))
+                                .owner(owner)
+                                .build();
+
+                return projectResDTO;
 
         }
 
