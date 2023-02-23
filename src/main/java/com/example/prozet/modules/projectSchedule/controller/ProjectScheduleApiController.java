@@ -71,12 +71,18 @@ public class ProjectScheduleApiController {
     }
 
     @PutMapping("/scheduletype/{idx}")
-    public ResponseEntity<?> updateScheduleType(@PathVariable Long idx, @RequestBody ScheduleType scheduleType) {
+    public ResponseEntity<?> updateProjectScheduleType(@PathVariable Long idx, @RequestBody ScheduleType scheduleType) {
 
         ProjectScheduleResDTO projectScheduleResDTO = projectScheduleService.editProjectScheduleType(idx, scheduleType);
 
         return ResponseDTO.toResponseEntity(ResponseEnum.UPDATE_PROJECT_SCHEDULE_SECCESS, projectScheduleResDTO);
 
+    }
+
+    @PutMapping("/{idx}")
+    public ResponseEntity<?> updateProjectSchedule() {
+
+        return null;
     }
 
 }

@@ -11,6 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.example.prozet.modules.projectSchedule.domain.entity.ProjectScheduleEntity;
+import com.example.prozet.modules.schedule.domain.dto.request.ScheduleEditReqDTO;
 import com.example.prozet.modules.schedule.domain.dto.response.ScheduleResDTO;
 
 import lombok.AllArgsConstructor;
@@ -44,6 +45,15 @@ public class ScheduleEntity {
                 .startDate(startDate)
                 .endDate(endDate)
                 .build();
+    }
+
+    public void editSchedule(ScheduleEditReqDTO scheduleEditReqDTO) {
+
+        this.title = scheduleEditReqDTO.getTitle();
+        this.content = scheduleEditReqDTO.getContent();
+        this.startDate = scheduleEditReqDTO.getStartDate();
+        this.endDate = scheduleEditReqDTO.getEndDate();
+
     }
 
 }

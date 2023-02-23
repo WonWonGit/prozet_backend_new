@@ -62,6 +62,7 @@ public enum ErrorCode {
     PROJECT_STACK_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "ECPS00", "Project owner only or access type edit only"),
     PROJECT_STACK_NOT_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "ECPS00", "Project stack is not exist"),
 
+    SCHEDULE_NOT_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "ECS000", "Schedule is not exist"),
     SAVE_SCHEDULE_FAIL(HttpStatus.BAD_REQUEST, "ECPS00", "Fail save project schedule"),
 
     PROJECT_SCHEDULE_NOT_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "ECPS00", "Project schedule is not exist");
