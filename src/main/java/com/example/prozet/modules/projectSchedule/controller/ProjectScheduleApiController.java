@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +16,7 @@ import com.example.prozet.common.ErrorCode;
 import com.example.prozet.common.ErrorResponse;
 import com.example.prozet.common.ResponseDTO;
 import com.example.prozet.common.ResponseEnum;
+import com.example.prozet.enum_pakage.ScheduleType;
 import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 import com.example.prozet.modules.projectMember.service.ProjectMemberService;
 import com.example.prozet.modules.projectSchedule.domain.dto.request.ProjectScheduleSaveReqDTO;
@@ -46,7 +49,7 @@ public class ProjectScheduleApiController {
 
         if (scheduleResDTO == null) {
 
-            return ErrorResponse.toResponseEntity(ErrorCode.SAVE_SCHEDULE_SAVE);
+            return ErrorResponse.toResponseEntity(ErrorCode.SAVE_SCHEDULE_FAIL);
 
         }
 
@@ -64,6 +67,15 @@ public class ProjectScheduleApiController {
                 .collect(Collectors.groupingBy(projectSchedule -> projectSchedule.getScheduleResDTO().getIdx()));
 
         return ResponseDTO.toResponseEntity(ResponseEnum.SAVE_PROJECT_SCHEDULE_SECCESS, projectScheduleResDTO);
+
+    }
+
+    @PutMapping("/scheduletype/{idx}")
+    public ResponseEntity<?> updateScheduleType(@PathVariable Long idx, @RequestBody ScheduleType scheduleType) {
+
+        ProjectScheduleResDTO projectScheduleResDTO = projectScheduleService.editProjectScheduleType(idx, scheduleType);
+
+        return ResponseDTO.toResponseEntity(ResponseEnum.UPDATE_PROJECT_SCHEDULE_SECCESS, projectScheduleResDTO);
 
     }
 

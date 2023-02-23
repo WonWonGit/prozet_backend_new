@@ -60,4 +60,8 @@ public class ProjectScheduleEntity {
                 .build();
     }
 
+    public void editProjectScheduleType(ScheduleType scheduleType) {
+        this.scheduleType = scheduleType;
+    }
+
 }

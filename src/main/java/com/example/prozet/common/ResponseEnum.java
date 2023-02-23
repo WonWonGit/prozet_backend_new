@@ -36,7 +36,8 @@ public enum ResponseEnum {
 
     FIND_STACK_SUCCESS(HttpStatus.OK, "Stack list"),
 
-    SAVE_PROJECT_SCHEDULE_SECCESS(HttpStatus.OK, "Save project schedule");
+    SAVE_PROJECT_SCHEDULE_SECCESS(HttpStatus.OK, "Save project schedule"),
+    UPDATE_PROJECT_SCHEDULE_SECCESS(HttpStatus.OK, "Update project schedule");
 
     private final HttpStatus httpCode;
     private final String message;
