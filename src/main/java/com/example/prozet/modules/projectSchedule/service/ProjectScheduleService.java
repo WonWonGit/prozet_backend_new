@@ -1,5 +1,9 @@
 package com.example.prozet.modules.projectSchedule.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,10 +13,12 @@ import com.example.prozet.common.ErrorCode;
 import com.example.prozet.enum_pakage.ScheduleType;
 import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
+import com.example.prozet.modules.projectSchedule.domain.dto.request.ProjectScheduleEditReqDTO;
 import com.example.prozet.modules.projectSchedule.domain.dto.request.ProjectScheduleSaveReqDTO;
 import com.example.prozet.modules.projectSchedule.domain.dto.response.ProjectScheduleResDTO;
 import com.example.prozet.modules.projectSchedule.domain.entity.ProjectScheduleEntity;
 import com.example.prozet.modules.projectSchedule.repository.ProjectScheduleRepository;
+import com.example.prozet.modules.schedule.domain.dto.response.ScheduleResDTO;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,14 +48,38 @@ public class ProjectScheduleService {
         return null;
     }
 
-    public ProjectScheduleResDTO editProjectScheduleType(Long idx, ScheduleType scheduleType) {
+    @Transactional
+    public Map<ScheduleResDTO, List<ProjectScheduleResDTO>> editProjectScheduleType(Long idx,
+            ScheduleType scheduleType) {
 
-        ProjectScheduleEntity projectScheduleEntity = projectScheduleRepository.findByIdx(idx)
-                .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_SCHEDULE_NOT_EXIST));
+        List<ProjectScheduleEntity> projectScheduleEntity = projectScheduleRepository.findByScheduleEntity_Idx(idx);
 
-        projectScheduleEntity.editProjectScheduleType(scheduleType);
+        projectScheduleEntity.forEach((projectSchedule) -> {
+            projectSchedule.editProjectScheduleType(scheduleType);
+        });
 
-        return projectScheduleEntity.toProjectScheduleResDTO();
+        List<ProjectScheduleResDTO> projectScheduleResDTOs = projectScheduleEntity.stream()
+                .map(ProjectScheduleEntity::toProjectScheduleResDTO).collect(Collectors.toList());
+
+        Map<ScheduleResDTO, List<ProjectScheduleResDTO>> projectSchduleResDTO = projectScheduleResDTOs.stream()
+                .collect(Collectors.groupingBy(ProjectScheduleResDTO::getScheduleResDTO));
+
+        return projectSchduleResDTO;
+
+    }
+
+    public void editProjectScheudleDeleteMember(Long projectScheduleIdx, Long projectMemberIdx) {
+
+        // ProjectScheduleEntity projectScheduleEntity =
+        // projectScheduleRepository.findByIdxAndProjectMemberEntity_Idx(idx)
+        // .orElseThrow(() -> new
+        // CustomException(ErrorCode.PROJECT_SCHEDULE_NOT_EXIST));
+
+        // projectScheduleRepository.delete(projectScheduleEntity);
+
+    }
+
+    public void editProjectScheudleAddMember(Long idx) {
 
     }
 

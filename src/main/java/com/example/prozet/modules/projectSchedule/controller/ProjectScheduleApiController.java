@@ -19,6 +19,7 @@ import com.example.prozet.common.ResponseEnum;
 import com.example.prozet.enum_pakage.ScheduleType;
 import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMemberResDTO;
 import com.example.prozet.modules.projectMember.service.ProjectMemberService;
+import com.example.prozet.modules.projectSchedule.domain.dto.request.ProjectScheduleEditReqDTO;
 import com.example.prozet.modules.projectSchedule.domain.dto.request.ProjectScheduleSaveReqDTO;
 import com.example.prozet.modules.projectSchedule.domain.dto.response.ProjectScheduleResDTO;
 import com.example.prozet.modules.projectSchedule.service.ProjectScheduleService;
@@ -73,14 +74,18 @@ public class ProjectScheduleApiController {
     @PutMapping("/scheduletype/{idx}")
     public ResponseEntity<?> updateProjectScheduleType(@PathVariable Long idx, @RequestBody ScheduleType scheduleType) {
 
-        ProjectScheduleResDTO projectScheduleResDTO = projectScheduleService.editProjectScheduleType(idx, scheduleType);
+        Map<ScheduleResDTO, List<ProjectScheduleResDTO>> projectScheduleResDTO = projectScheduleService
+                .editProjectScheduleType(idx, scheduleType);
 
         return ResponseDTO.toResponseEntity(ResponseEnum.UPDATE_PROJECT_SCHEDULE_SECCESS, projectScheduleResDTO);
 
     }
 
     @PutMapping("/{idx}")
-    public ResponseEntity<?> updateProjectSchedule() {
+    public ResponseEntity<?> updateProjectSchedule(@PathVariable Long idx,
+            @RequestBody ProjectScheduleEditReqDTO projectScheduleEditReqDTO) {
+
+        ScheduleResDTO scheduleResDTO = scheduleService.editSchedule(projectScheduleEditReqDTO.getScheduleEditReqDTO());
 
         return null;
     }
