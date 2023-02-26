@@ -64,8 +64,8 @@ public class ProjectScheduleApiController {
             }
         });
 
-        Map<Long, List<ProjectScheduleResDTO>> projectScheduleResDTO = projectScheduleResDTOList.stream()
-                .collect(Collectors.groupingBy(projectSchedule -> projectSchedule.getScheduleResDTO().getIdx()));
+        Map<ScheduleResDTO, List<ProjectScheduleResDTO>> projectScheduleResDTO = projectScheduleResDTOList.stream()
+                .collect(Collectors.groupingBy(ProjectScheduleResDTO::getScheduleResDTO));
 
         return ResponseDTO.toResponseEntity(ResponseEnum.SAVE_PROJECT_SCHEDULE_SECCESS, projectScheduleResDTO);
 
@@ -87,7 +87,30 @@ public class ProjectScheduleApiController {
 
         ScheduleResDTO scheduleResDTO = scheduleService.editSchedule(projectScheduleEditReqDTO.getScheduleEditReqDTO());
 
-        return null;
+        Map<ScheduleResDTO, List<ProjectScheduleResDTO>> projectScheduleResDTO = projectScheduleService
+                .findProjectSchedule(idx);
+
+        List<ProjectScheduleResDTO> projectScheduleResDTOList = new ArrayList<>();
+
+        if (!projectScheduleEditReqDTO.getDeleteProjectMemberIdx().isEmpty()) {
+            projectScheduleEditReqDTO.getDeleteProjectMemberIdx().stream().forEach(projectMemberIdx -> {
+                projectScheduleService.editProjectScheudleDeleteMember(idx, projectMemberIdx);
+            });
+        }
+
+        if (!projectScheduleEditReqDTO.getAddProjectMemberIdx().isEmpty()) {
+            projectScheduleEditReqDTO.getAddProjectMemberIdx()
+                    .stream().forEach(projectMemberIdx -> {
+                        ProjectScheduleResDTO projectScheduleResDTO2 = projectScheduleService
+                                .editProjectScheudleAddMember(idx, projectMemberIdx);
+                        projectScheduleResDTOList.add(projectScheduleResDTO2);
+                    });
+        }
+
+        projectScheduleResDTO.put(scheduleResDTO, projectScheduleResDTOList);
+
+        return ResponseDTO.toResponseEntity(ResponseEnum.UPDATE_PROJECT_SCHEDULE_SECCESS, projectScheduleResDTO);
+
     }
 
 }

@@ -34,6 +34,7 @@ public class ScheduleService {
 
     }
 
+    @Transactional
     public ScheduleResDTO editSchedule(ScheduleEditReqDTO scheduleEditReqDTO) {
 
         ScheduleEntity scheduleEntity = scheduleRepository.findByIdx(scheduleEditReqDTO.getIdx())

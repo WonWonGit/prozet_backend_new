@@ -13,6 +13,7 @@ public interface ProjectScheduleRepository extends JpaRepository<ProjectSchedule
 
     List<ProjectScheduleEntity> findByScheduleEntity_Idx(Long idx);
 
-    Optional<ProjectScheduleEntity> findByIdxAndProjectMemberEntity_Idx(Long projectScheduleIdx, Long projectMemberIdx);
+    Optional<ProjectScheduleEntity> findByScheduleEntity_IdxAndProjectMemberEntity_Idx(Long scheduleIdx,
+            Long projectMemberIdx);
 
 }
