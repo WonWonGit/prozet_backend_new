@@ -25,6 +25,7 @@ import com.example.prozet.modules.project.domain.dto.response.ProjectResDTO;
 import com.example.prozet.modules.project.domain.entity.ProjectEntity;
 import com.example.prozet.modules.projectMember.domain.entity.ProjectMemberEntity;
 import com.example.prozet.modules.projectSchedule.domain.dto.request.ProjectScheduleSaveReqDTO;
+import com.example.prozet.modules.projectSchedule.domain.dto.response.ProjectScheduleListResDTO;
 import com.example.prozet.modules.projectSchedule.domain.dto.response.ProjectScheduleResDTO;
 import com.example.prozet.modules.projectSchedule.domain.entity.ProjectScheduleEntity;
 import com.example.prozet.modules.projectSchedule.repository.ProjectScheduleRepository;
@@ -91,10 +92,10 @@ public class ProjectScheduleServiceTest {
 
                 when(projectScheduleRepository.findByScheduleEntity_Idx(anyLong())).thenReturn(projectScheduleEntities);
 
-                Map<Long, List<ProjectScheduleResDTO>> projectSchduleResDTO = projectScheduleService
+                ProjectScheduleListResDTO projectSchduleResDTO = projectScheduleService
                                 .editProjectScheduleType(1L, ScheduleType.INPROGRESS);
 
-                System.out.println(projectSchduleResDTO + "$$$$");
+                assertThat(projectSchduleResDTO.getProjectMemberFindResDTO().size()).isEqualTo(2);
 
         }
 

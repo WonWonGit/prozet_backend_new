@@ -16,6 +16,7 @@ import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMembe
 import com.example.prozet.modules.projectMember.domain.entity.ProjectMemberEntity;
 import com.example.prozet.modules.projectMember.repository.ProjectMemberRepository;
 import com.example.prozet.modules.projectSchedule.domain.dto.request.ProjectScheduleSaveReqDTO;
+import com.example.prozet.modules.projectSchedule.domain.dto.response.ProjectScheduleListResDTO;
 import com.example.prozet.modules.projectSchedule.domain.dto.response.ProjectScheduleResDTO;
 import com.example.prozet.modules.projectSchedule.domain.entity.ProjectScheduleEntity;
 import com.example.prozet.modules.projectSchedule.repository.ProjectScheduleRepository;
@@ -57,7 +58,7 @@ public class ProjectScheduleService {
         }
 
         @Transactional
-        public Map<Long, List<ProjectScheduleResDTO>> editProjectScheduleType(Long idx,
+        public ProjectScheduleListResDTO editProjectScheduleType(Long idx,
                         ScheduleType scheduleType) {
 
                 List<ProjectScheduleEntity> projectScheduleEntity = projectScheduleRepository
@@ -70,11 +71,15 @@ public class ProjectScheduleService {
                 List<ProjectScheduleResDTO> projectScheduleResDTOs = projectScheduleEntity.stream()
                                 .map(ProjectScheduleEntity::toProjectScheduleResDTO).collect(Collectors.toList());
 
-                Map<Long, List<ProjectScheduleResDTO>> projectSchduleResDTO = projectScheduleResDTOs.stream()
-                                .collect(Collectors.groupingBy(projectScheduleResDTO -> projectScheduleResDTO
-                                                .getScheduleResDTO().getIdx()));
+                ProjectScheduleListResDTO projectScheduleListResDTO = new ProjectScheduleListResDTO(
+                                projectScheduleResDTOs);
 
-                return projectSchduleResDTO;
+                // Map<Long, List<ProjectScheduleResDTO>> projectSchduleResDTO =
+                // projectScheduleResDTOs.stream()
+                // .collect(Collectors.groupingBy(projectScheduleResDTO -> projectScheduleResDTO
+                // .getScheduleResDTO().getIdx()));
+
+                return projectScheduleListResDTO;
 
         }
 

@@ -21,6 +21,7 @@ import com.example.prozet.modules.projectMember.domain.dto.response.ProjectMembe
 import com.example.prozet.modules.projectMember.service.ProjectMemberService;
 import com.example.prozet.modules.projectSchedule.domain.dto.request.ProjectScheduleEditReqDTO;
 import com.example.prozet.modules.projectSchedule.domain.dto.request.ProjectScheduleSaveReqDTO;
+import com.example.prozet.modules.projectSchedule.domain.dto.response.ProjectScheduleListResDTO;
 import com.example.prozet.modules.projectSchedule.domain.dto.response.ProjectScheduleResDTO;
 import com.example.prozet.modules.projectSchedule.service.ProjectScheduleService;
 import com.example.prozet.modules.schedule.domain.dto.response.ScheduleResDTO;
@@ -74,7 +75,7 @@ public class ProjectScheduleApiController {
     @PutMapping("/scheduletype/{idx}")
     public ResponseEntity<?> updateProjectScheduleType(@PathVariable Long idx, @RequestBody ScheduleType scheduleType) {
 
-        Map<ScheduleResDTO, List<ProjectScheduleResDTO>> projectScheduleResDTO = projectScheduleService
+        ProjectScheduleListResDTO projectScheduleResDTO = projectScheduleService
                 .editProjectScheduleType(idx, scheduleType);
 
         return ResponseDTO.toResponseEntity(ResponseEnum.UPDATE_PROJECT_SCHEDULE_SECCESS, projectScheduleResDTO);
